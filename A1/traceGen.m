@@ -5,14 +5,19 @@ classdef traceGen
               % assign initial values
               traceXNew = traceX;
               traceYNew = traceY;
+              VxNew = Vx;
+              VyNew = Vy;
               for i=1:interval
-                  directionX=traceGen.bounceCheck(traceXNew(i,:),0,200e-9);
-                  directionY=traceGen.bounceCheck(traceYNew(i,:),0,100e-9);
-                  newVx = directionX.*Vx;
-                  newVy = directionY.*Vy;
-                  traceXNew(i+1,:) = traceXNew(i,:)+newVx*dt;
-                  traceYNew(i+1,:) = traceYNew(i,:)+newVy*dt;
                   
+                  Xnext = traceXNew(i,:)+(VxNew*dt);
+                  VxNew = traceGen.bounceCheck(Xnext,0,200e-9).*VxNew;
+                  Ynext = traceYNew(i,:)+(VyNew*dt);
+                  VyNew = traceGen.bounceCheck(Ynext,0,100e-9).*VyNew;
+                  testX = traceXNew(i,:);
+          
+                  traceXNew(i+1,:) = traceXNew(i,:)+VxNew*dt;
+                  testXnext = traceXNew(i+1,:);
+                  traceYNew(i+1,:) = traceYNew(i,:)+VyNew*dt;
                   
               end
           
@@ -24,8 +29,6 @@ classdef traceGen
                   element = pos(i);
                   if element<=limLow||element>=limHigh
                       tempCheck(1,i)=-1;
-                  else
-                      tempCheck(1,i)=1;
                   end
               end
               directionArray = tempCheck;
