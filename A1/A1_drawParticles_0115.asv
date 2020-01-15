@@ -1,0 +1,33 @@
+% Q1p3
+% assign position arrays
+kb = 1.3806504e-23;               % Boltzmann constant
+T = 300;                          % temperature, in Kalvin
+me = 0.26*9.10938215e-31;         % electron mass
+VThermal = kb*T/me;               % thermal velocity
+
+dt = 15e-15;
+TStop = 1000 * dt;
+nParticles = 10;
+% trace initialization
+TraceParticlesX = zeros(TStop,nParticles);
+TraceParticlesY = zeros(TStop,nParticles);
+% assigning initial positions
+PositionParticlesX = randn([1,nParticles]);
+PositionParticlesY = randn([1,nParticles]);
+%add this to update function later
+TraceParticlesX(1,:) = PositionParticlesX;
+TraceParticlesY(1,:) = PositionParticlesY;
+
+% assigning initial velocity
+AngleParticle = 360*rand([1,nParticles]);
+VelocityParticleX = VThermal*cos(AngleParticle);
+VelocityParticleY = VThermal*sin(AngleParticle);
+% update trace
+TraceParticlesX(2,:) = PositionParticlesX + VelocityParticleX*dt;
+TraceParticlesY(2,:) = PositionParticlesY + VelocityParticleY*dt;
+
+
+for R = 1:nParticles
+    plot(TraceParticlesX(R),TraceParticlesY(R));
+    hold on;
+end
