@@ -1,0 +1,4 @@
+function [newPosX,newPosY] = update(PosX, PosY, Vx, Vy, dt)
+newPosX = PosX + Vx*dt;
+newPosY = PosY + Vy*dt;
+end
