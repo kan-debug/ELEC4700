@@ -1,6 +1,7 @@
 function [ output_args ] = AddParticleStream(num, x0, y0, PartAng, Type, Ep, Seper)
 global AtomSpacing x y AtomType Vx Vy Mass0 Mass1 nAtoms
-
+%num is number of atoms, partAngle is angle, Ep kinetic energy?, Seper is
+%seperation
 if Type == 0
     Mass = Mass0;
 else
@@ -14,11 +15,11 @@ for p = 0:num - 1
     AtomType(nAtoms) = Type;
 end
 
-V = sqrt(2 * Ep / Mass);
+V = -sqrt(0.02 * Ep / Mass);
 
 for p = 1:num
-    Vx(nAtoms - num + p) = V * cos(PartAng);
-    Vy(nAtoms - num + p) = V * sin(PartAng);
+    Vx(nAtoms - num + p) = V;
+    Vy(nAtoms - num + p) = 0;
 end
 
 end

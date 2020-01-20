@@ -21,8 +21,8 @@ Size = 20 * AtomSpacing;
 Limits = [-Size +Size -Size +Size]; % square is good
 PlDelt = 5*dt;
 MarkerSize = 10;
-PlotFile = 'Block.gif';
-doPlotImage = 0;
+PlotFile = 'Block_cir.gif';
+doPlotImage = 1;
 PlotSize = [100, 100, 1049, 1049];
 
 ScaleV = .2e-11;

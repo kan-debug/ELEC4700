@@ -4,6 +4,7 @@ global x y AtomSpacing
 global nAtoms
 global AtomType Vx Vy Mass0 Mass1
 
+%select mass from type of particle
 if Type == 0
     Mass = Mass0;
 else

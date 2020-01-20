@@ -18,8 +18,8 @@ T = 30;
 AddHCPAtomicBlob(10, 0, 0, 0, 0, 0, InitDist, T, 0);
 
 Ep = 4 * C.q_0;
-vy0 = -sqrt(0.02 * Ep / Mass1);
-AddHCPAtomicBlob(5, -0, 20, 0, vy0, 0, InitDist, T, 1);
+vx0 = -sqrt(0.02 * Ep / Mass1);
+AddHCPAtomicBlob(5, 20, 0, vx0, 0, 0, InitDist, T, 1);
 
 Size = 15 * AtomSpacing;
 Limits = [-Size +Size -Size +1.5*Size]; % square is good

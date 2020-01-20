@@ -43,7 +43,7 @@ PlotPosOnly = 0;
 % Simulation initiallization, following are different initial modes
 % initblock is step required for generating file named 'block'
 % comment are mainly 
-InitThree
+% InitThree
 % InitBlock
 % InitCirc
 % InitBlock0
@@ -53,6 +53,8 @@ InitThree
 % InitHCPBlob
 % InitVStreamHCP
 % InitHCPMeltSim
+ InitBike
+
 
 MaxX = max(x) * 1.5;
 MinX = min(x) * 1.5;
