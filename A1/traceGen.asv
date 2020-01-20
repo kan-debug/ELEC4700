@@ -19,7 +19,7 @@ classdef traceGen
                   traceXNew(i+1,:) = traceXNew(i,:)+Vx*dt;
                   testXnext = traceXNew(i+1,:);
                   %traceYNew(i+1,:) = traceYNew(i,:)+VyNew*dt;
-                  traceYNew(i+1,:) = traceGen.stepNext(checkY,traceYNew(i,:),Vy, dt,0);
+                  [traceYNew(i+1,:), Vy ]= traceGen.stepNext(checkY,traceYNew(i,:),Vy, dt,0);
                   
               end
           
@@ -44,11 +44,24 @@ classdef traceGen
               switch mode
                   case 0
                       %reflection
+                      nextVel = checkArray.*Velocity;
+                      nextPos = position + nextVel.*dt;
+                  case 1
+                      %jump
+                      %for each partical across boundary, move to the far
+                      %end
+                      boundary1, boundary2=[0,200]*1e-9;
+                      nextVel = Velocity;
+                      nextPos = position + nextVel.*dt;
+                      for i=1:numel(nextPos)
+                          if nextPos(i)>boundary2 
+                              nextPos(i)=nextPos(i)-boundary2;
+                          end
+                          if nextPos(i)<boundary1
+                              nextPos(i)=nextPos(i)+boundary2;
+                          end
+                      end
                       
-                      nextPos = position + checkArray.*(Velocity*dt);
-%                   case mode==1
-%                       %jump
-%                       next = position + Velocity*dt;
                   otherwise
                       fprintf('matlab NMSL, %d',mode)
               end

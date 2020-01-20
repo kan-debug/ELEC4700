@@ -16,7 +16,8 @@ classdef traceGen
                   
                   testX = traceXNew(i,:);
           
-                  traceXNew(i+1,:) = traceXNew(i,:)+Vx*dt;
+                  %traceXNew(i+1,:) = traceXNew(i,:)+Vx*dt;
+                  [traceXNew(i+1,:), Vx ]= traceGen.stepNext(checkX,traceXNew(i,:),Vx, dt,1);
                   testXnext = traceXNew(i+1,:);
                   %traceYNew(i+1,:) = traceYNew(i,:)+VyNew*dt;
                   [traceYNew(i+1,:), Vy ]= traceGen.stepNext(checkY,traceYNew(i,:),Vy, dt,0);
@@ -46,9 +47,26 @@ classdef traceGen
                       %reflection
                       nextVel = checkArray.*Velocity;
                       nextPos = position + nextVel.*dt;
-%                   case mode==1
-%                       %jump
-%                       next = position + Velocity*dt;
+                  case 1
+                      %jump
+                      
+                      boundary1=0;
+                      boundary2=200*1e-9;
+                      nextVel = Velocity;
+                      nextPos = position + nextVel.*dt;
+                      
+                      %for each partical across boundary, move to the far
+                      %end
+                      %Is the graph what he wants? via straight lines?
+                      for i=1:numel(nextPos)
+                          if nextPos(i)>boundary2 
+                              nextPos(i)=nextPos(i)-boundary2;
+                          end
+                          if nextPos(i)<boundary1
+                              nextPos(i)=nextPos(i)+boundary2;
+                          end
+                      end
+                      
                   otherwise
                       fprintf('matlab NMSL, %d',mode)
               end

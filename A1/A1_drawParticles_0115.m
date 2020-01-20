@@ -34,7 +34,7 @@ VelocityParticleY = VThermal*sin(AngleParticle);
 % plot(TraceParticlesX(1:2,2),TraceParticlesY(1:2,2));
 for R = 1:nParticles
     plot(TraceParticlesX(1:TTest,R),TraceParticlesY(1:TTest,R));
-    pause(0.05);
+    pause(0.1);
     hold on;
 end
 xlim([0,300]*1e-9)
