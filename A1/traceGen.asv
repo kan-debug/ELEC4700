@@ -19,7 +19,7 @@ classdef traceGen
                   traceXNew(i+1,:) = traceXNew(i,:)+Vx*dt;
                   testXnext = traceXNew(i+1,:);
                   %traceYNew(i+1,:) = traceYNew(i,:)+VyNew*dt;
-                  [traceYNew(i+1,:), Vy ]= traceGen.stepNext(checkY,traceYNew(i,:),Vy, dt,0);
+                  traceYNew(i+1,:) = traceGen.stepNext(checkY,traceYNew(i,:),Vy, dt,0);
                   
               end
           
@@ -44,8 +44,8 @@ classdef traceGen
               switch mode
                   case 0
                       %reflection
-                      nextVel = checkArray.*Velocity;
-                      nextPos = position + nextVel.*dt;
+                      
+                      nextPos = position + checkArray.*(Velocity*dt);
 %                   case mode==1
 %                       %jump
 %                       next = position + Velocity*dt;
