@@ -36,7 +36,7 @@ function [] = MCtraj(type,nTraj)
     
     if type == 1
         Wind = @UniformRandWind;
-        WindParas = [10];
+        WindParas = [1000];
     elseif type == 2
         Wind = @NormalRandWind;
         WindParas = [5];

@@ -37,7 +37,6 @@ VelocityParticleY = VThermal*sin(AngleParticle);
 %     pause(0.1);
 %     hold on;
 % end
-
 xlim([0,300]*1e-9)
 ylim([0,200]*1e-9)
 grid on
