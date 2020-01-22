@@ -43,7 +43,7 @@ classdef traceGen
                     color=color-[0.09,.09,0];
                   end
                   
-                  title(['Temperature is ',num2str(i),' K'])
+                  title(['Temperature is ',num2str(traceGen.getTemp(Vx, Vy)),' K'])
               end
           
           end
@@ -95,5 +95,15 @@ classdef traceGen
               end
               
           end
+          
+          function temp = getTemp(Vx, Vy)
+              averageV = sqrt(mean(Vx)^2+mean(Vy)^2);
+              %given average kinetic energy=1/2*mv^2=3/2*kT
+              kb = 1.3806504e-23; 
+              me = 0.26*9.10938215e-31;
+              temp = 2/(3*kb)*1/2*me*averageV^2;
+              
+          end
+          
     end
 end

@@ -39,11 +39,11 @@ classdef traceGen
                     plot(traceXNew(i:i+1,n),traceYNew(i:i+1,n),'color',color);
                     %remove hold on to see bug in water
                     hold on;
-                    pause(0.01);
+                    pause(0.001);
                     color=color-[0.09,.09,0];
                   end
                   
-                  title(['Temperature is ',num2str(c),' K'])
+                  title(['Temperature is ',num2str(i),' K'])
               end
           
           end
@@ -95,5 +95,12 @@ classdef traceGen
               end
               
           end
+          
+          function temp = getTemp(Vx, Vy)
+              averageV = sqrt(mean(Vx)^2+mean(Vy));
+              
+              
+          end
+          
     end
 end
