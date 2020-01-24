@@ -28,12 +28,7 @@ TraceParticlesY(1,:) = PositionParticlesY;
 AngleParticle = 360*rand([1,nParticles]);
 VelocityParticleX = VThermal*cos(AngleParticle);
 VelocityParticleY = VThermal*sin(AngleParticle);
-mean(VelocityParticleX)
-mean(VelocityParticleY)
-velAvg = sqrt(mean(VelocityParticleX.^2)+mean(VelocityParticleY.^2));
-refT=0.5*me*velAvg^2/kb;
 
-testTemp = traceGen.getTemp(VelocityParticleX,VelocityParticleY);
 % update trace, delete motiplier later on
 [TraceParticlesX,TraceParticlesY] = traceGen.iterate(i,TraceParticlesX,TraceParticlesY,VelocityParticleX,VelocityParticleY,dt);
 

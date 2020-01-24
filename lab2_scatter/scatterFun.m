@@ -8,7 +8,7 @@ classdef scatterFun
               traceXNew = traceX;
               traceYNew = traceY;
               timeArray = linspace(0,dt*interval,interval+1);
-              %figure init
+              
               
               
               

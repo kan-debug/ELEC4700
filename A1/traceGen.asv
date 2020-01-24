@@ -9,16 +9,13 @@ classdef traceGen
               traceXNew = traceX;
               traceYNew = traceY;
               timeArray = linspace(0,dt*interval,interval+1);
-              tempArray = zeros(interval);
+              
               %plot init
               ax1 = subplot(2,1,1);
               ax2 = subplot(2,1,2);
               
               %loop over dt
               for i=1:interval
-                  if i==1
-                      Temp=300;
-                  end
                   
                   %check whether the partical is going to hit boundary
                   Xnext = traceXNew(i,:)+(Vx*dt);
@@ -47,12 +44,9 @@ classdef traceGen
                     color=color-[0.09,.09,0];
                   end
                   
-                  nextTemp=traceGen.getTemp(Vx, Vy);
-                  plot(ax1, timeArray(i:i+1),[Temp,nextTemp]);
-                  hold on;
-                  title(['The average temperature is ',num2str(nextTemp),' K'])
-                  %save temp history
-                  Temp = nextTemp;
+                  
+                  plot(ax1, timeArray(1:i),traceGen.getTemp(Vx, Vy));
+                  title(['The average temperature is ',num2str(traceGen.getTemp(Vx, Vy)),' K'])
                   
               end
           
