@@ -21,7 +21,7 @@
     dt = 15e-15;
     interval = 1000;
     TStop = 1000 * dt;
-    nParticles = 1;
+    nParticles = 5;
     
     % trace initialization
     TraceParticlesX = zeros(TStop/dt,nParticles);
