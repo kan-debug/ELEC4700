@@ -7,7 +7,6 @@
     % set(0,'DefaultFigureWindowStyle','docked')
     global C
 
-    addpath ../geom2d/geom2d
 
     C.q_0 = 1.60217653e-19;             % electron charge
     C.hb = 1.054571596e-34;             % Dirac constant
@@ -40,8 +39,10 @@
 %     AngleParticle = 360*rand([1,nParticles]);
 %     VelocityParticleX = VThermal*cos(AngleParticle);
 %     VelocityParticleY = VThermal*sin(AngleParticle);
-    VelocityParticleX=0;
-    VelocityParticleY=0;
+    VelocityParticleX=zeros(TStop/dt,nParticles);
+    VelocityParticleY=zeros(TStop/dt,nParticles);
+    
+    
     
     % assigning initial force=Eq=ma
     ForceParticleX=1*C.q_0;

@@ -16,7 +16,7 @@ classdef scatterFun
               for i=1:interval
                   ax1 = subplot(3,1,1);
                   plot(ax1,traceXNew(1:i,1),traceYNew(1:i,1));
-                  title(['Velocity is ',num2str(Vx(i,1)),' m/s'])
+                  title(['Velocity is ',num2str(Vx(i)),' m/s'])
                   xlabel(ax1,'position x');
                   ylabel(ax1,'position y');
                   
@@ -34,8 +34,8 @@ classdef scatterFun
                   
 
 
-                  [traceXNew(i+1,:), Vx(i+1,1) ]= scatterFun.stepNext([0,0],traceXNew(i,:),Vx(i,1), dt,2);
-                  [traceYNew(i+1,:), Vy(i+1,1) ]= scatterFun.stepNext([0,0],traceYNew(i,:),Vy(i,1), dt,3);
+                  [traceXNew(i+1,:), Vx(i+1) ]= scatterFun.stepNext([0,0],traceXNew(i,:),Vx(i), dt,2);
+                  [traceYNew(i+1,:), Vy(i+1) ]= scatterFun.stepNext([0,0],traceYNew(i,:),Vy(i), dt,3);
                   
               end
               
@@ -84,16 +84,12 @@ classdef scatterFun
                       end
                   case 2
                       %acceloration and scatter
-                      a_Static=1.60217653e-19/9.10938215e-31;
                       if rand()<=0.05
-                          a_actual=-a_Static*0.5;
-                          Velocity=0;
-                      else
-                          a_actual=a_Static;
+                          
                       end
                       
-                      
-                      nextVel = Velocity+a_actual*dt;
+                      a=1.60217653e-19/9.10938215e-31;
+                      nextVel = Velocity+a*dt;
                       nextPos = position + nextVel.*dt;
                   case 3
                       %acceloration
