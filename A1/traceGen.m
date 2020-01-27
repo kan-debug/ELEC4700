@@ -14,6 +14,7 @@ classdef traceGen
               tempArray = zeros(interval);
               LastCollision = zeros(1,numParticle);
               NextCollision = zeros(1,numParticle);
+              FreePath = zeros(1,numParticle);
               
               
               %plot init
@@ -24,7 +25,7 @@ classdef traceGen
               %loop over dt
               for i=1:interval
                  
-                  [Vx,Vy,LastCollision,NextCollision]=traceGen.scatter(Vx,Vy,T,LastCollision,NextCollision);
+                  [Vx,Vy,LastCollision,NextCollision,FreePath]=traceGen.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePath);
                   
                   %check whether the partical is going to hit boundary
                   Xnext = traceXNew(i,:)+(Vx*dt);
@@ -59,6 +60,7 @@ classdef traceGen
                   title(ax1,['The average temperature is ',num2str(tempArray(i)),' K'])
                   
                   title(ax2,['The Mean Time is ',num2str(mean(NextCollision-LastCollision)),' S'])
+                  mean(FreePath)
                   label
               end
           
@@ -112,7 +114,7 @@ classdef traceGen
               end
               
           end
-          function [VxNext, VyNext,LastCollision,NextCollision] = scatter(Vx,Vy,Temperature,LastCollision,NextCollision)
+          function [VxNext, VyNext,LastCollision,NextCollision,FreePath] = scatter(Vx,Vy,Temperature,LastCollision,NextCollision,FreePath)
               %mode defines behavior for x,y,etc. 
               %temperature is for determine the velocity after scatter
               me = 0.26*9.10938215e-31;
@@ -133,7 +135,9 @@ classdef traceGen
                   else
                       NextCollision(i)=NextCollision(i)+dt;
                   end
+                  FreePath(i)=(NextCollision(i)-LastCollision(i))*sqrt(Vx(i)^2+Vy(i)^2);
               end
+              
               VxNext=Vx;
               VyNext=Vy;
           end
