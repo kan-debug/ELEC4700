@@ -6,11 +6,15 @@ classdef traceGen
         %logic indexing
           function [traceXNew,traceYNew] = iterate(interval,traceX,traceY, Vx, Vy, dt)
               T=300;
+              [~,numParticle] = size(traceX);
               % assign initial values
               traceXNew = traceX;
               traceYNew = traceY;
               timeArray = linspace(0,dt*interval,interval+1);
               tempArray = zeros(interval);
+              LastCollision = zeros(1,numParticle);
+              NextCollision = zeros(1,numParticle);
+              
               
               %plot init
               figure(2);
@@ -20,7 +24,7 @@ classdef traceGen
               %loop over dt
               for i=1:interval
                  
-                  [Vx,Vy]=traceGen.scatter(Vx,Vy,T);
+                  [Vx,Vy,LastCollision,NextCollision]=traceGen.scatter(Vx,Vy,T,LastCollision,NextCollision);
                   
                   %check whether the partical is going to hit boundary
                   Xnext = traceXNew(i,:)+(Vx*dt);
@@ -38,7 +42,7 @@ classdef traceGen
 %                   hold on;
 %                   pause(0.01);
                   
-                  [~,numParticle] = size(traceXNew);
+                  
                   color=[1,1,1];
                   for n=1:numParticle
                       %put on ax1 does not work
@@ -53,6 +57,8 @@ classdef traceGen
                   plot(ax1, timeArray(1:i),tempArray(1:i));
                   
                   title(ax1,['The average temperature is ',num2str(tempArray(i)),' K'])
+                  
+                  title(ax2,['The Mean Time is ',num2str(mean(NextCollision-LastCollision)),' S'])
                   label
               end
           
@@ -106,7 +112,7 @@ classdef traceGen
               end
               
           end
-          function [VxNext, VyNext] = scatter(Vx,Vy,Temperature)
+          function [VxNext, VyNext,LastCollision,NextCollision] = scatter(Vx,Vy,Temperature,LastCollision,NextCollision)
               %mode defines behavior for x,y,etc. 
               %temperature is for determine the velocity after scatter
               me = 0.26*9.10938215e-31;
@@ -123,8 +129,9 @@ classdef traceGen
                       VThermal = VThermalMean+1e4.*randn(1,1);
                       Vx(i) = VThermal.*cos(AngleParticle);
                       Vy(i) = VThermal.*sin(AngleParticle);
-                      
-                      
+                      LastCollision(i)=NextCollision(i);
+                  else
+                      NextCollision(i)=NextCollision(i)+dt;
                   end
               end
               VxNext=Vx;
