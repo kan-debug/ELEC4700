@@ -6,14 +6,14 @@ kb = 1.3806504e-23;               % Boltzmann constant
 T = 300;                          % temperature, in Kalvin
 me = 0.26*9.10938215e-31;         % electron mass
 % with two degree of freedom: 2*1/2kT
-VThermal = sqrt(2*kb*T/me);               % thermal velocity
+VThermalMean = sqrt(2*kb*T/me);               % thermal velocity
 
 dt = 15e-15;
 i = 1000;
 TStop = 1000 * dt;
 
 TTest = 1000;
-nParticles = 100;
+nParticles = 1000;
 nParticlesPlot = 10;
 % trace initialization
 TraceParticlesX = zeros(TStop/dt,nParticles);
@@ -27,8 +27,12 @@ TraceParticlesY(1,:) = PositionParticlesY;
 
 % assigning initial velocity
 AngleParticle = 360*rand([1,nParticles]);
-VelocityParticleX = VThermal*cos(AngleParticle);
-VelocityParticleY = VThermal*sin(AngleParticle);
+%1e4 as deviation, 
+VThermal = VThermalMean+1e4.*randn(1,nParticles);
+figure(1);
+histogram(VThermal);
+VelocityParticleX = VThermal.*cos(AngleParticle);
+VelocityParticleY = VThermal.*sin(AngleParticle);
 
 % update trace, delete motiplier later on
 [TraceParticlesX,TraceParticlesY] = traceGen.iterate(i,TraceParticlesX(:,1:nParticlesPlot),TraceParticlesY(:,1:nParticlesPlot),VelocityParticleX(:,1:nParticlesPlot),VelocityParticleY(:,1:nParticlesPlot),dt);

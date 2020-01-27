@@ -72,8 +72,6 @@ classdef traceGen
           
           function [Pos, nextPos, nextVel] = stepNext(checkArray, position, Velocity, dt, mode)
               %mode defines the behavior of the collision
-              %THe previous position may be modified for the purpose of
-              %jumping over boundaries
               Pos = position;
               switch mode
                   case 0
@@ -99,36 +97,11 @@ classdef traceGen
                               Pos(i)=nextPos(i)-nextVel(i)*dt;
                           end
                       end
+                      
                   otherwise
                       fprintf('matlab NMSL, %d',mode)
               end
               
-          end
-          function [VxNext, VyNext] = scatter(Vx,Vy,Temperature)
-              %mode defines behavior for x,y,etc. 
-              %temperature is for determine the velocity after scatter
-              me = 0.26*9.10938215e-31;
-              kb = 1.3806504e-23;
-              
-              dt = 15e-15;
-              Tmean = 0.2e-12;
-              VThermalMean = sqrt(2*kb*Temperature/me);
-              Pscat=1-exp(-dt/Tmean);
-              
-              for i=1:numel(Velocity)
-                  if rand()<Pscat
-                      AngleParticle = 360*rand(1,1);
-                      VThermal = VThermalMean+1e4.*randn(1,1);
-                      Vx = VThermal.*cos(AngleParticle);
-                      Vy = VThermal.*sin(AngleParticle);
-                      
-                      
-                  end
-              end
-              VxNext=Vx;
-              VyNext=Vy;
-              %checkArray is one if particle inside boundary, -1 if across
-              %boundary
           end
           
           function temp = getTemp(Vx, Vy)

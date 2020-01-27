@@ -5,20 +5,22 @@ classdef traceGen
         %different boundary
         %logic indexing
           function [traceXNew,traceYNew] = iterate(interval,traceX,traceY, Vx, Vy, dt)
+              T=300;
               % assign initial values
               traceXNew = traceX;
               traceYNew = traceY;
               timeArray = linspace(0,dt*interval,interval+1);
               tempArray = zeros(interval);
+              
               %plot init
+              figure(2);
               ax1 = subplot(2,1,1);
               ax2 = subplot(2,1,2);
               
               %loop over dt
               for i=1:interval
-                  if i==1
-                      Temp=300;
-                  end
+                 
+                  [Vx,Vy]=traceGen.scatter(Vx,Vy,T);
                   
                   %check whether the partical is going to hit boundary
                   Xnext = traceXNew(i,:)+(Vx*dt);
@@ -47,13 +49,11 @@ classdef traceGen
                     color=color-[0.09,.09,0];
                   end
                   
-                  nextTemp=traceGen.getTemp(Vx, Vy);
-                  plot(ax1, timeArray(i:i+1),[Temp,nextTemp]);
-                  hold on;
-                  title(['The average temperature is ',num2str(nextTemp),' K'])
-                  %save temp history
-                  Temp = nextTemp;
+                  tempArray(i)=traceGen.getTemp(Vx, Vy);
+                  plot(ax1, timeArray(1:i),tempArray(1:i));
                   
+                  title(ax1,['The average temperature is ',num2str(tempArray(i)),' K'])
+                  label
               end
           
           end
@@ -74,6 +74,8 @@ classdef traceGen
           
           function [Pos, nextPos, nextVel] = stepNext(checkArray, position, Velocity, dt, mode)
               %mode defines the behavior of the collision
+              %THe previous position may be modified for the purpose of
+              %jumping over boundaries
               Pos = position;
               switch mode
                   case 0
@@ -99,11 +101,34 @@ classdef traceGen
                               Pos(i)=nextPos(i)-nextVel(i)*dt;
                           end
                       end
-                      
                   otherwise
                       fprintf('matlab NMSL, %d',mode)
               end
               
+          end
+          function [VxNext, VyNext] = scatter(Vx,Vy,Temperature)
+              %mode defines behavior for x,y,etc. 
+              %temperature is for determine the velocity after scatter
+              me = 0.26*9.10938215e-31;
+              kb = 1.3806504e-23;
+              
+              dt = 15e-15;
+              Tmean = 0.2e-12;
+              VThermalMean = sqrt(2*kb*Temperature/me);
+              Pscat=1-exp(-dt/Tmean);
+              
+              for i=1:numel(Vx)
+                  if rand()<Pscat
+                      AngleParticle = 360*rand(1,1);
+                      VThermal = VThermalMean+1e4.*randn(1,1);
+                      Vx(i) = VThermal.*cos(AngleParticle);
+                      Vy(i) = VThermal.*sin(AngleParticle);
+                      
+                      
+                  end
+              end
+              VxNext=Vx;
+              VyNext=Vy;
           end
           
           function temp = getTemp(Vx, Vy)
