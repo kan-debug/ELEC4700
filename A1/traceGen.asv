@@ -14,7 +14,8 @@ classdef traceGen
               tempArray = zeros(interval);
               LastCollision = zeros(1,numParticle);
               NextCollision = zeros(1,numParticle);
-              FreePathHist = zeros(interval,numParticle);
+              FreePath = zeros(1,numParticle);
+              FreePathM
               
               
               %plot init
@@ -25,7 +26,7 @@ classdef traceGen
               %loop over dt
               for i=1:interval
                  
-                  [Vx,Vy,LastCollision,NextCollision,FreePathHist(i,:)]=traceGen.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePathHist(i,:));
+                  [Vx,Vy,LastCollision,NextCollision,FreePath]=traceGen.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePath);
                   
                   %check whether the partical is going to hit boundary
                   Xnext = traceXNew(i,:)+(Vx*dt);
@@ -61,8 +62,8 @@ classdef traceGen
                   
                   title(ax2,['The Mean Time of collision is ',num2str(mean(NextCollision-LastCollision)),' s'])
                   delete(tag);
-                  tag = annotation('textbox', [0.7, 0.1, 0.1, 0.1], 'String', "MFP: "+num2str(mean(mean(FreePathHist(1:i,:))))+"m");
-                  
+                  tag = annotation('textbox', [0.7, 0.1, 0.1, 0.1], 'String', "MFP: "+num2str(mean(FreePath))+"m");
+                  mean(FreePath)
                   label
               end
           
