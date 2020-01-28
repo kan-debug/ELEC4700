@@ -31,9 +31,7 @@ AngleParticle = 360*rand([1,nParticles]);
 VThermal = VThermalMean+1e4.*randn(1,nParticles);
 figure(1);
 histogram(VThermal);
-title('Distribution of initial velocity');
-xlabel('Velocity (m/s)');
-ylabel('number of particles (1)');
+
 VelocityParticleX = VThermal.*cos(AngleParticle);
 VelocityParticleY = VThermal.*sin(AngleParticle);
 
