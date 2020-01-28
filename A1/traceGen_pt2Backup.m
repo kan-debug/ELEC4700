@@ -151,11 +151,8 @@ classdef traceGen
               me = 0.26*9.10938215e-31;
               %use mean of squared velocity, due to the negative v
               temp = 1/kb*(1/2*me*averageVSq);
-          end
-          
-          function box = boxInit(XPos,YPos)
-              %use find and logical array
-              %https://www.mathworks.com/company/newsletters/articles/matrix-indexing-in-matlab.html
+
+              
           end
           
     end

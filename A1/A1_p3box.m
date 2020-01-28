@@ -15,12 +15,15 @@ TStop = 1000 * dt;
 TTest = 1000;
 nParticles = 1000;
 nParticlesPlot = 10;
+Xlim = 200e-9;
+Ylim = 100e-9;
+
 % trace initialization
 TraceParticlesX = zeros(TStop/dt,nParticles);
 TraceParticlesY = zeros(TStop/dt,nParticles);
 % assigning initial positions
-PositionParticlesX = 200e-9*rand([1,nParticles]);
-PositionParticlesY = 100e-9*rand([1,nParticles]);
+PositionParticlesX = Xlim*rand([1,nParticles]);
+PositionParticlesY = Ylim*rand([1,nParticles]);
 %add this to update function later
 TraceParticlesX(1,:) = PositionParticlesX;
 TraceParticlesY(1,:) = PositionParticlesY;
@@ -31,7 +34,9 @@ AngleParticle = 360*rand([1,nParticles]);
 VThermal = VThermalMean+1e4.*randn(1,nParticles);
 figure(1);
 histogram(VThermal);
-
+title('Distribution of initial velocity');
+xlabel('Velocity (m/s)');
+ylabel('number of particles (1)');
 VelocityParticleX = VThermal.*cos(AngleParticle);
 VelocityParticleY = VThermal.*sin(AngleParticle);
 
