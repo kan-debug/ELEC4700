@@ -13,7 +13,7 @@ i = 1000;
 TStop = 1000 * dt;
 
 TTest = 1000;
-nParticles = 1000;
+nParticles = 10;
 nParticlesPlot = 10;
 Xlim = 200e-9;
 Ylim = 100e-9;
@@ -22,8 +22,9 @@ Ylim = 100e-9;
 TraceParticlesX = zeros(TStop/dt,nParticles);
 TraceParticlesY = zeros(TStop/dt,nParticles);
 % assigning initial positions
-PositionParticlesX = Xlim*rand([1,nParticles]);
-PositionParticlesY = Ylim*rand([1,nParticles]);
+% PositionParticlesX = Xlim*rand([1,nParticles]);
+% PositionParticlesY = Ylim*rand([1,nParticles]);
+[PositionParticlesX, PositionParticlesY] = traceGen.boxInit(0, 100e-9, 50e-9, Xlim, Ylim,nParticles);
 %add this to update function later
 TraceParticlesX(1,:) = PositionParticlesX;
 TraceParticlesY(1,:) = PositionParticlesY;

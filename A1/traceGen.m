@@ -22,6 +22,9 @@ classdef traceGen
               ax1 = subplot(2,1,1);
               ax2 = subplot(2,1,2);
               tag=[];
+              XBox = [0 0 100e-9 100e-9 0]; YBox = [0 50e-9 50e-9 0 0];
+              plot(ax2,XBox,YBox);
+              hold on;
               %loop over dt
               for i=1:interval
                  
@@ -49,7 +52,7 @@ classdef traceGen
                       %put on ax1 does not work
                     plot(ax2,traceXNew(i:i+1,n),traceYNew(i:i+1,n),'color',color);
                     %remove hold on to see bug in water
-                    hold on;
+                    
                     pause(0.001);
                     color=color-[0.09,.09,0];
                   end
@@ -153,9 +156,25 @@ classdef traceGen
               temp = 1/kb*(1/2*me*averageVSq);
           end
           
-          function box = boxInit(XPos,YPos)
+          function [XPos, YPos] = boxInit(RefPoint, XBoxlim, YBoxlim, Xlim, Ylim, nParticles)
               %use find and logical array
               %https://www.mathworks.com/company/newsletters/articles/matrix-indexing-in-matlab.html
+              XPos = Xlim*rand([1,nParticles]);
+              YPos = Ylim*rand([1,nParticles]);
+              boxEdge = [RefPoint,RefPoint+XBoxlim,RefPoint+YBoxlim];
+              
+              %logical matrix
+              logic=1;
+              while any(logic)
+                XPos(logic)=Xlim*randn(1,numel(XPos(logic)));
+                YPos(logic)=Ylim*randn(1,numel(YPos(logic)));
+                %XLogic indicate positions where X should not be
+                XLogic = (XPos>boxEdge(1)&XPos<boxEdge(2))|(XPos<0&XPos>Xlim);
+                YLogic = (YPos>boxEdge(1)&YPos<boxEdge(3))|(YPos<0&YPos>Ylim);
+                logic = XLogic&YLogic;
+              end
+              
+              
           end
           
     end
