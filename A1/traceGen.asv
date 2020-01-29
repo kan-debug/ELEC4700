@@ -22,10 +22,13 @@ classdef traceGen
               ax1 = subplot(2,1,1);
               ax2 = subplot(2,1,2);
               tag=[];
-              XBox1 = [0.5 0.5 1 1 0.5]*1e-7; YBox1 = [0 50e-9 50e-9 0 0]*1e-7;
+              %box init and plot
+              XBox1 = [0.5 0.5 1 1 0.5]*1e-7; YBox1 = [0 0.4 0.4 0 0]*1e-7;
+              XBox2 = [0.5 0.5 1 1 0.5]*1e-7; YBox2 = [0 0.4 0.4 0 0]*1e-7+0.6e-7;
               
               plot(ax2,XBox1,YBox1);
               hold on;
+              plot(ax2,XBox2,YBox2);
               
               %loop over dt
               for i=1:interval
@@ -37,16 +40,22 @@ classdef traceGen
                   checkX = traceGen.bounceCheck(Xnext,0,200e-9);
                   Ynext = traceYNew(i,:)+(Vy*dt);
                   checkY = traceGen.bounceCheck(Ynext,0,100e-9);
+                  %get particles over box
+                  XBoxLogic = (Xnext>XBox1(1)&Xnext<XBox1(3))|(Xnext>XBox2(1)&Xnext<XBox2(3));
+                  YBoxLogic = (Ynext>YBox1(1)&Ynext<YBox1(3))|(Ynext>YBox2(1)&Ynext<YBox2(3));
+                  BoxLogic = XBoxLogic&YBoxLogic;
+                  %get particles over box in X direction
+                  XBoxLogic = BoxLogic&XBoxLogic;
+                  Xnext(XBoxLogic)
+                  Ynext(YBoxLogic)
+                  
+                  %all particles hitting the box need to know boundary
+                  %hitting
+                  
                   
                   %next positions
                   [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen.stepNext(checkX,traceXNew(i,:),Vx, dt,1);
                   [traceYNew(i,:),traceYNew(i+1,:), Vy ]= traceGen.stepNext(checkY,traceYNew(i,:),Vy, dt,0);
-                  
-                  
-%                   plot(traceXNew(i:i+1,:),traceYNew(i:i+1,:));
-%                   %remove hold on to see bug in water
-%                   hold on;
-%                   pause(0.01);
                   
                   
                   color=[1,1,1];
@@ -63,7 +72,6 @@ classdef traceGen
                   plot(ax1, timeArray(1:i),tempArray(1:i));
                   
                   title(ax1,['The average temperature is ',num2str(tempArray(i)),' K'])
-                  
                   title(ax2,['The Mean Time of collision is ',num2str(mean(NextCollision-LastCollision)),' s'])
                   delete(tag);
                   tag = annotation('textbox', [0.7, 0.1, 0.1, 0.1], 'String', "MFP: "+num2str(mean(mean(FreePathHist(1:i,:))))+"m");
@@ -74,12 +82,14 @@ classdef traceGen
           end
           
           function checkArray = bounceCheck(pos,limLow,limHigh)
-              %mode defines behavior for x,y,etc. 
+              %boxLow/High are optional parameters designed for boxes
+              %box need to check twice so imaginary i is used
+              %single i can be turned to real 1 using logical indexing
               tempCheck = zeros(1,numel(pos)) + 1;
               for i=1:numel(pos)
                   element = pos(i);
                   if element<=limLow||element>=limHigh
-                      tempCheck(1,i)=-1;
+                     tempCheck(1,i)=-1;
                   end
               end
               checkArray = tempCheck;
@@ -174,10 +184,11 @@ classdef traceGen
                 %XLogic indicate positions where X should not be
                 %Logic is zero when nothing lying inside boundary
                 XBoxLogic = (XPos>boxEdge(1,1)&XPos<boxEdge(1,3))|(XPos>boxEdge(2,1)&XPos<boxEdge(2,3));
-                XLogic = XBoxLogic|(XPos<0|XPos>Xlim);
                 YBoxLogic = (YPos>boxEdge(1,2)&YPos<boxEdge(1,4))|(YPos>boxEdge(2,2)&YPos<boxEdge(2,4));
-                YLogic = YBoxLogic|(YPos<0|YPos>Ylim);
-                logic = XLogic&YLogic;
+                %Combined box logic 
+                BoxLogic = XBoxLogic&YBoxLogic;
+                logic = BoxLogic|(XPos<0|XPos>Xlim)|(YPos<0|YPos>Ylim);
+                
               end
               
               
