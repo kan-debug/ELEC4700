@@ -23,8 +23,12 @@ classdef traceGen
               ax2 = subplot(2,1,2);
               tag=[];
               %box init and plot
-              XBox1 = [0.5 0.5 1 1 0.5]*1e-7; YBox1 = [0 0.4 0.4 0 0]*1e-7;
-              XBox2 = [0.5 0.5 1 1 0.5]*1e-7; YBox2 = [0 0.4 0.4 0 0]*1e-7+0.6e-7;
+              
+              box1 = [0.5,0,1,0.4]*1e-7;
+              box2 = [0.5,0.6,1,1]*1e-7;
+              
+              XBox1 = [box1(1) box1(1) box1(3) box1(3) box1(1)]; YBox1 = [box1(2) box1(4) box1(4) box1(2) box1(2)];
+              XBox2 = [box2(1) box2(1) box2(3) box2(3) box2(1)]; YBox2 = [box2(2) box2(4) box2(4) box2(2) box2(2)];
               
               plot(ax2,XBox1,YBox1);
               hold on;
@@ -42,14 +46,14 @@ classdef traceGen
                   checkY = traceGen.bounceCheck(Ynext,0,100e-9);
                   %get particles over box, apply same logic to previous to
                   %know where particle comes from
-                  XBoxLogic = (Xnext>XBox1(1)&Xnext<XBox1(3))|(Xnext>XBox2(1)&Xnext<XBox2(3));
-                  YBoxLogic = (Ynext>YBox1(1)&Ynext<YBox1(3))|(Ynext>YBox2(1)&Ynext<YBox2(3));
-                  BoxLogic = XBoxLogic&YBoxLogic;
+                  Xold=traceXNew(i,:);
+                  Yold=traceYNew(i,:);
+                  [BoxLogicNext,~,~] = traceGen.boxcheck(Xnext,Ynext,[box1;box2]);
+                  [~,XLogicOld,YLogicOld] = traceGen.boxcheck(Xold,Yold,[box1;box2]);
                   %get particles over box in X direction
-                  XBoxLogic = BoxLogic&XBoxLogic;
-                  YBoxLogic = BoxLogic&YBoxLogic;
-                  checkX(XBoxLogic)=-1;
-                  checkY(YBoxLogic)=-1;
+                  
+                  checkX(BoxLogicNext&(~XLogicOld))=-1;
+                  checkY(BoxLogicNext&(~YLogicOld))=-1;
                   
                   %all particles hitting the box need to know boundary
                   %hitting
@@ -194,6 +198,12 @@ classdef traceGen
               end
               
               
+          end
+          function [boxlogic, XBoxLogic, YBoxLogic] = boxcheck(X,Y,boxEdge)
+              %for two boxes
+              XBoxLogic = (X>boxEdge(1,1)&X<boxEdge(1,3))|(X>boxEdge(2,1)&X<boxEdge(2,3));
+              YBoxLogic = (Y>boxEdge(1,2)&Y<boxEdge(1,4))|(Y>boxEdge(2,2)&Y<boxEdge(2,4));
+              boxlogic = XBoxLogic&YBoxLogic;
           end
           
     end
