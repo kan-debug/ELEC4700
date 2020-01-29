@@ -22,12 +22,10 @@ classdef traceGen
               ax1 = subplot(2,1,1);
               ax2 = subplot(2,1,2);
               tag=[];
-              XBox1 = [0.5 0.5 1 1 0.5]*1e-7; YBox1 = [0 0.4 0.4 0 0]*1e-7;
-              XBox2 = [0.5 0.5 1 1 0.5]*1e-7; YBox2 = [0 0.4 0.4 0 0]*1e-7+0.6e-7;
+              XBox1 = [0.5 0.5 1 1 0.5]*1e-7; YBox1 = [0 50e-9 50e-9 0 0]*1e-7;
               
               plot(ax2,XBox1,YBox1);
               hold on;
-              plot(ax2,XBox2,YBox2);
               
               %loop over dt
               for i=1:interval
@@ -176,12 +174,10 @@ classdef traceGen
                 %XLogic indicate positions where X should not be
                 %Logic is zero when nothing lying inside boundary
                 XBoxLogic = (XPos>boxEdge(1,1)&XPos<boxEdge(1,3))|(XPos>boxEdge(2,1)&XPos<boxEdge(2,3));
-                %XLogic = XBoxLogic|(XPos<0|XPos>Xlim);
+                XLogic = XBoxLogic|(XPos<0|XPos>Xlim);
                 YBoxLogic = (YPos>boxEdge(1,2)&YPos<boxEdge(1,4))|(YPos>boxEdge(2,2)&YPos<boxEdge(2,4));
-                %YLogic = YBoxLogic|(YPos<0|YPos>Ylim);
-                BoxLogic = XBoxLogic&YBoxLogic;
-                logic = BoxLogic|(XPos<0|XPos>Xlim)|(YPos<0|YPos>Ylim);
-                
+                YLogic = YBoxLogic|(YPos<0|YPos>Ylim);
+                logic = XLogic&YLogic;
               end
               
               
