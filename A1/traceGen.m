@@ -19,9 +19,11 @@ classdef traceGen
               
               %plot init
               figure(2);
-              ax1 = subplot(2,1,1);
-              ax2 = subplot(2,1,2);
+              ax1 = subplot(3,1,1);
+              ax2 = subplot(3,1,2);
+              ax3 = subplot(3,1,3);
               tag=[];
+              
               %box init and plot
               
               box1 = [0.5,0,1,0.4]*1e-7;
@@ -39,13 +41,15 @@ classdef traceGen
                  
                   %[Vx,Vy,LastCollision,NextCollision,FreePathHist(i,:)]=traceGen.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePathHist(i,:));
                   
-                  %check whether the partical is going to hit boundary
+                  %check whether the partical is going to hit boundary for
+                  %sides
                   Xnext = traceXNew(i,:)+(Vx*dt);
                   checkX = traceGen.bounceCheck(Xnext,0,200e-9);
                   Ynext = traceYNew(i,:)+(Vy*dt);
                   checkY = traceGen.bounceCheck(Ynext,0,100e-9);
                   %get particles over box, apply same logic to previous to
                   %know where particle comes from
+                  
                   Xold=traceXNew(i,:);
                   Yold=traceYNew(i,:);
                   [BoxLogicNext,~,~] = traceGen.boxcheck(Xnext,Ynext,[box1;box2]);
@@ -73,7 +77,7 @@ classdef traceGen
                     pause(0.001);
                     color=color-[0.09,.09,0];
                   end
-                  
+                  %temp
                   tempArray(i)=traceGen.getTemp(Vx, Vy);
                   plot(ax1, timeArray(1:i),tempArray(1:i));
                   
