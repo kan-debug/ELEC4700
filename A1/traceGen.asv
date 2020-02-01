@@ -39,7 +39,7 @@ classdef traceGen
               %loop over dt
               for i=1:interval
                  
-                  [Vx,Vy,LastCollision,NextCollision,FreePathHist(i,:)]=traceGen.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePathHist(i,:));
+                  %[Vx,Vy,LastCollision,NextCollision,FreePathHist(i,:)]=traceGen.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePathHist(i,:));
                   
                   %check whether the partical is going to hit boundary for
                   %sides
@@ -144,14 +144,23 @@ classdef traceGen
                       
                       %bottom boundary, Vy inital negative, resulting angle
                       %positive
+                      Velocity(checkArray==-1&Velocity>0)
+                      Velocity(checkArray==-1&Velocity<0)
+                      Velocity
                       
-                      %sine works with degrees
-                      angletop(checkArray==-1&Velocity>0) = pi+pi*rand(1,numel(Velocity(checkArray==-1&Velocity>0)));
-                      anglebottom(checkArray==-1&Velocity<0) = pi*rand(1,numel(Velocity(checkArray==-1&Velocity<0)));
-                      
+                      angletop(checkArray==-1&Velocity>0) = 180+180*rand(1,numel(Velocity(checkArray==-1&Velocity>0)));
+                      anglebottom(checkArray==-1&Velocity<0) = 180*rand(1,numel(Velocity(checkArray==-1&Velocity<0)));
+                      try
+                          
+                      numel(nonzeros(angletop))==numel(Velocity(checkArray==-1&Velocity>0))&&numel(nonzeros(anglebottom))==numel(Velocity(checkArray==-1&Velocity<0))
+                      [Velocity(checkArray==-1&Velocity<0),VelocitySum(checkArray==-1&Velocity<0),sin(nonzeros(anglebottom).')]
+                      [Velocity(checkArray==-1&Velocity>0),VelocitySum(checkArray==-1&Velocity>0),sin(nonzeros(angletop).')]
+                      catch
+                          warning('Dimensions of arrays being concatenated are not consistent');
+                      end
                       try
                           %hitting the bottom, initial velocity smaller than 0
-                          if any(checkArray==-1&Velocity<0)
+                          if 
                           Velocity(checkArray==-1&Velocity<0)=VelocitySum(checkArray==-1&Velocity<0).*sin(nonzeros(anglebottom).');
                           Velocity2(checkArray==-1&Velocity<0)=VelocitySum(checkArray==-1&Velocity<0).*cos(nonzeros(anglebottom).');
                           else
