@@ -21,6 +21,7 @@ classdef traceGen
               figure(2);
               ax1 = subplot(2,1,1);
               ax2 = subplot(2,1,2);
+              
              
               tag=[];
               
@@ -68,6 +69,8 @@ classdef traceGen
                   [traceYNew(i,:),traceYNew(i+1,:), Vy, Vx ]= traceGen.stepNext(checkY,traceYNew(i,:),Vy, dt,2, Vx);
                   
                   
+                  
+                  
                   color=[1,1,1];
                   for n=1:numParticle
                       %put on ax1 does not work
@@ -77,10 +80,24 @@ classdef traceGen
                     pause(0.001);
                     color=color-[0.09,.09,0];
                   end
+                  
                   %temp
                   tempArray(i)=traceGen.getTemp(Vx, Vy);
                   plot(ax1, timeArray(1:i),tempArray(1:i));
+                  figure(3);
+                  hist3([traceXNew(i,:).',traceYNew(i,:).'],[20,10]);
                   
+                  
+                  VelocitySum = sqrt(Vx.^2+Vy.^2);
+%                   nx = length(unique(traceXNew(i,:).')) ; 
+%                   ny = length(unique(traceYNew(i,:).')) ;
+                  X = traceXNew(i,:).';
+                  Y = traceYNew(i,:).';
+                  Z = VelocitySum.' ;
+                  figure(4);
+                  scatter(X,Y,20000,Z,'filled')
+                  
+                  figure(2);
                   title(ax1,['The average temperature is ',num2str(tempArray(i)),' K'])
                   title(ax2,['The Mean Time of collision is ',num2str(mean(NextCollision-LastCollision)),' s'])
                   delete(tag);
@@ -149,21 +166,31 @@ classdef traceGen
                       angletop(checkArray==-1&Velocity>0) = pi+pi*rand(1,numel(Velocity(checkArray==-1&Velocity>0)));
                       anglebottom(checkArray==-1&Velocity<0) = pi*rand(1,numel(Velocity(checkArray==-1&Velocity<0)));
                       
+                      %save a history to avoid the conflict
+                      VelocityTop = Velocity;
+                      VelocityBottom = Velocity;
+                      VelocityTop2 = Velocity2;
+                      VelocityBottom2 = Velocity2;
+                      nextVel = Velocity;
+                      
                       try
                           %hitting the bottom, initial velocity smaller than 0
                           if any(checkArray==-1&Velocity<0)
-                          Velocity(checkArray==-1&Velocity<0)=VelocitySum(checkArray==-1&Velocity<0).*sin(nonzeros(anglebottom).');
-                          Velocity2(checkArray==-1&Velocity<0)=VelocitySum(checkArray==-1&Velocity<0).*cos(nonzeros(anglebottom).');
-                          else
+                          VelocityBottom(checkArray==-1&Velocity<0)=VelocitySum(checkArray==-1&Velocity<0).*sin(nonzeros(anglebottom).');
+                          VelocityBottom2(checkArray==-1&Velocity<0)=VelocitySum(checkArray==-1&Velocity<0).*cos(nonzeros(anglebottom).');
+                          elseif any(checkArray==-1&Velocity>0)
                           %hitting the top, initial velocity larger than 0
-                          Velocity(checkArray==-1&Velocity>0)=VelocitySum(checkArray==-1&Velocity>0).*sin(nonzeros(angletop).');
-                          Velocity2(checkArray==-1&Velocity>0)=VelocitySum(checkArray==-1&Velocity>0).*cos(nonzeros(angletop).');
+                          VelocityTop(checkArray==-1&Velocity>0)=VelocitySum(checkArray==-1&Velocity>0).*sin(nonzeros(angletop).');
+                          VelocityTop2(checkArray==-1&Velocity>0)=VelocitySum(checkArray==-1&Velocity>0).*cos(nonzeros(angletop).');
                           end
                       catch
                           warning('Unable to perform assignment because the left and right sides have a different number of elements');
                       end
                       
-                      nextVel = Velocity;
+                      nextVel(checkArray==-1&Velocity<0) = VelocityBottom(checkArray==-1&Velocity<0);
+                      nextVel(checkArray==-1&Velocity>0) = VelocityTop(checkArray==-1&Velocity>0);
+                      Velocity2(checkArray==-1&Velocity<0) = VelocityBottom2(checkArray==-1&Velocity<0);
+                      Velocity2(checkArray==-1&Velocity>0) = VelocityTop2(checkArray==-1&Velocity>0);
                       nextPos = position + nextVel.*dt;
                       
                   otherwise
