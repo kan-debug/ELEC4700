@@ -1,3 +1,6 @@
+%% Part2  Collisions with Mean Free Path (MFP)
+% Histogram, temperature and trajectories are included in plot, MFP and tmn
+% are included in title
 % Q1p3
 % assign position arrays
 close all
@@ -9,7 +12,7 @@ me = 0.26*9.10938215e-31;         % electron mass
 VThermalMean = sqrt(2*kb*T/me);               % thermal velocity
 
 dt = 15e-15;
-i = 1000;
+i = 100;
 TStop = 1000 * dt;
 
 TTest = 1000;

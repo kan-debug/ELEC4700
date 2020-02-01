@@ -21,54 +21,27 @@ classdef traceGen
               figure(2);
               ax1 = subplot(2,1,1);
               ax2 = subplot(2,1,2);
-              
-             
               tag=[];
-              
-              %box init and plot
-              
-              box1 = [0.5,0,1,0.4]*1e-7;
-              box2 = [0.5,0.6,1,1]*1e-7;
-              
-              XBox1 = [box1(1) box1(1) box1(3) box1(3) box1(1)]; YBox1 = [box1(2) box1(4) box1(4) box1(2) box1(2)];
-              XBox2 = [box2(1) box2(1) box2(3) box2(3) box2(1)]; YBox2 = [box2(2) box2(4) box2(4) box2(2) box2(2)];
-              
-              plot(ax2,XBox1,YBox1);
-              hold on;
-              plot(ax2,XBox2,YBox2);
-              
               %loop over dt
               for i=1:interval
                  
                   [Vx,Vy,LastCollision,NextCollision,FreePathHist(i,:)]=traceGen.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePathHist(i,:));
                   
-                  %check whether the partical is going to hit boundary for
-                  %sides
+                  %check whether the partical is going to hit boundary
                   Xnext = traceXNew(i,:)+(Vx*dt);
                   checkX = traceGen.bounceCheck(Xnext,0,200e-9);
                   Ynext = traceYNew(i,:)+(Vy*dt);
                   checkY = traceGen.bounceCheck(Ynext,0,100e-9);
-                  %get particles over box, apply same logic to previous to
-                  %know where particle comes from
-                  
-                  Xold=traceXNew(i,:);
-                  Yold=traceYNew(i,:);
-                  [BoxLogicNext,~,~] = traceGen.boxcheck(Xnext,Ynext,[box1;box2]);
-                  [~,XLogicOld,YLogicOld] = traceGen.boxcheck(Xold,Yold,[box1;box2]);
-                  %get particles over box in X direction
-                  
-                  checkX(BoxLogicNext&(~XLogicOld))=-1;
-                  checkY(BoxLogicNext&(~YLogicOld))=-1;
-                  
-                  %all particles hitting the box need to know boundary
-                  %hitting
-                  
                   
                   %next positions
-                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen.stepNext(checkX,traceXNew(i,:),Vx, dt,0);
-                  [traceYNew(i,:),traceYNew(i+1,:), Vy, Vx ]= traceGen.stepNext(checkY,traceYNew(i,:),Vy, dt,2, Vx);
+                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen.stepNext(checkX,traceXNew(i,:),Vx, dt,1);
+                  [traceYNew(i,:),traceYNew(i+1,:), Vy ]= traceGen.stepNext(checkY,traceYNew(i,:),Vy, dt,0);
                   
                   
+%                   plot(traceXNew(i:i+1,:),traceYNew(i:i+1,:));
+%                   %remove hold on to see bug in water
+%                   hold on;
+%                   pause(0.01);
                   
                   
                   color=[1,1,1];
@@ -76,29 +49,16 @@ classdef traceGen
                       %put on ax1 does not work
                     plot(ax2,traceXNew(i:i+1,n),traceYNew(i:i+1,n),'color',color);
                     %remove hold on to see bug in water
-                    
+                    hold on;
                     pause(0.001);
                     color=color-[0.09,.09,0];
                   end
                   
-                  %temp
                   tempArray(i)=traceGen.getTemp(Vx, Vy);
                   plot(ax1, timeArray(1:i),tempArray(1:i));
-                  figure(3);
-                  hist3([traceXNew(i,:).',traceYNew(i,:).'],[20,10]);
                   
-                  
-                  VelocitySum = sqrt(Vx.^2+Vy.^2);
-%                   nx = length(unique(traceXNew(i,:).')) ; 
-%                   ny = length(unique(traceYNew(i,:).')) ;
-                  X = traceXNew(i,:).';
-                  Y = traceYNew(i,:).';
-                  Z = VelocitySum.' ;
-                  figure(4);
-                  scatter(X,Y,20000,Z,'filled')
-                  
-                  figure(2);
                   title(ax1,['The average temperature is ',num2str(tempArray(i)),' K'])
+                  
                   title(ax2,['The Mean Time of collision is ',num2str(mean(NextCollision-LastCollision)),' s'])
                   delete(tag);
                   tag = annotation('textbox', [0.7, 0.1, 0.1, 0.1], 'String', "MFP: "+num2str(mean(mean(FreePathHist(1:i,:))))+"m");
@@ -109,14 +69,12 @@ classdef traceGen
           end
           
           function checkArray = bounceCheck(pos,limLow,limHigh)
-              %boxLow/High are optional parameters designed for boxes
-              %box need to check twice so imaginary i is used
-              %single i can be turned to real 1 using logical indexing
+              %mode defines behavior for x,y,etc. 
               tempCheck = zeros(1,numel(pos)) + 1;
               for i=1:numel(pos)
                   element = pos(i);
                   if element<=limLow||element>=limHigh
-                     tempCheck(1,i)=-1;
+                      tempCheck(1,i)=-1;
                   end
               end
               checkArray = tempCheck;
@@ -124,13 +82,11 @@ classdef traceGen
               %boundary
           end
           
-          function [Pos, nextPos, nextVel,Velocity2] = stepNext(checkArray, position, Velocity, dt, mode, Velocity2)
+          function [Pos, nextPos, nextVel] = stepNext(checkArray, position, Velocity, dt, mode)
               %mode defines the behavior of the collision
               %THe previous position may be modified for the purpose of
               %jumping over boundaries
               Pos = position;
-              angletop=zeros(1,numel(checkArray));
-              anglebottom=zeros(1,numel(checkArray));
               switch mode
                   case 0
                       %reflection
@@ -155,44 +111,6 @@ classdef traceGen
                               Pos(i)=nextPos(i)-nextVel(i)*dt;
                           end
                       end
-                  case 2 %thermal diffusion
-                      %here velocity is the y velocity and v2 is x velocity
-                      VelocitySum = sqrt(Velocity.^2+Velocity2.^2);
-                      
-                      %bottom boundary, Vy inital negative, resulting angle
-                      %positive
-                      
-                      %sine works with degrees
-                      angletop(checkArray==-1&Velocity>0) = pi+pi*rand(1,numel(Velocity(checkArray==-1&Velocity>0)));
-                      anglebottom(checkArray==-1&Velocity<0) = pi*rand(1,numel(Velocity(checkArray==-1&Velocity<0)));
-                      
-                      %save a history to avoid the conflict
-                      VelocityTop = Velocity;
-                      VelocityBottom = Velocity;
-                      VelocityTop2 = Velocity2;
-                      VelocityBottom2 = Velocity2;
-                      nextVel = Velocity;
-                      
-                      try
-                          %hitting the bottom, initial velocity smaller than 0
-                          if any(checkArray==-1&Velocity<0)
-                          VelocityBottom(checkArray==-1&Velocity<0)=VelocitySum(checkArray==-1&Velocity<0).*sin(nonzeros(anglebottom).');
-                          VelocityBottom2(checkArray==-1&Velocity<0)=VelocitySum(checkArray==-1&Velocity<0).*cos(nonzeros(anglebottom).');
-                          elseif any(checkArray==-1&Velocity>0)
-                          %hitting the top, initial velocity larger than 0
-                          VelocityTop(checkArray==-1&Velocity>0)=VelocitySum(checkArray==-1&Velocity>0).*sin(nonzeros(angletop).');
-                          VelocityTop2(checkArray==-1&Velocity>0)=VelocitySum(checkArray==-1&Velocity>0).*cos(nonzeros(angletop).');
-                          end
-                      catch
-                          warning('Unable to perform assignment because the left and right sides have a different number of elements');
-                      end
-                      
-                      nextVel(checkArray==-1&Velocity<0) = VelocityBottom(checkArray==-1&Velocity<0);
-                      nextVel(checkArray==-1&Velocity>0) = VelocityTop(checkArray==-1&Velocity>0);
-                      Velocity2(checkArray==-1&Velocity<0) = VelocityBottom2(checkArray==-1&Velocity<0);
-                      Velocity2(checkArray==-1&Velocity>0) = VelocityTop2(checkArray==-1&Velocity>0);
-                      nextPos = position + nextVel.*dt;
-                      
                   otherwise
                       fprintf('matlab NMSL, %d',mode)
               end
@@ -233,38 +151,8 @@ classdef traceGen
               me = 0.26*9.10938215e-31;
               %use mean of squared velocity, due to the negative v
               temp = 1/kb*(1/2*me*averageVSq);
-          end
-          
-          function [XPos, YPos] = boxInit(XRefPoint, YRefPoint, XBoxlim, YBoxlim, Xlim, Ylim, nParticles)
-              %use find and logical array
-              %https://www.mathworks.com/company/newsletters/articles/matrix-indexing-in-matlab.html
-              XPos = Xlim*rand([1,nParticles]);
-              YPos = Ylim*rand([1,nParticles]);
-              %Box edge 
-              boxEdge = [XRefPoint, YRefPoint,XRefPoint+XBoxlim,YRefPoint+YBoxlim];
+
               
-              %logical matrix
-              logic=1;
-              while any(logic)
-                XPos(logic)=Xlim*randn(1,numel(XPos(logic)));
-                YPos(logic)=Ylim*randn(1,numel(YPos(logic)));
-                %XLogic indicate positions where X should not be
-                %Logic is zero when nothing lying inside boundary
-                XBoxLogic = (XPos>boxEdge(1,1)&XPos<boxEdge(1,3))|(XPos>boxEdge(2,1)&XPos<boxEdge(2,3));
-                YBoxLogic = (YPos>boxEdge(1,2)&YPos<boxEdge(1,4))|(YPos>boxEdge(2,2)&YPos<boxEdge(2,4));
-                %Combined box logic 
-                BoxLogic = XBoxLogic&YBoxLogic;
-                logic = BoxLogic|(XPos<0|XPos>Xlim)|(YPos<0|YPos>Ylim);
-                
-              end
-              
-              
-          end
-          function [boxlogic, XBoxLogic, YBoxLogic] = boxcheck(X,Y,boxEdge)
-              %for two boxes
-              XBoxLogic = (X>boxEdge(1,1)&X<boxEdge(1,3))|(X>boxEdge(2,1)&X<boxEdge(2,3));
-              YBoxLogic = (Y>boxEdge(1,2)&Y<boxEdge(1,4))|(Y>boxEdge(2,2)&Y<boxEdge(2,4));
-              boxlogic = XBoxLogic&YBoxLogic;
           end
           
     end

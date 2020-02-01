@@ -67,7 +67,7 @@ classdef traceGen
                   %next positions
                   [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen.stepNext(checkX,traceXNew(i,:),Vx, dt,0);
                   [traceYNew(i,:),traceYNew(i+1,:), Vy, Vx ]= traceGen.stepNext(checkY,traceYNew(i,:),Vy, dt,2, Vx);
-                  VelocitySum = sqrt(Vx.^2+Vy.^2);
+                  
                   
                   
                   
@@ -86,12 +86,15 @@ classdef traceGen
                   plot(ax1, timeArray(1:i),tempArray(1:i));
                   figure(3);
                   hist3([traceXNew(i,:).',traceYNew(i,:).'],[20,10]);
+                  title(['This is interval',num2str(i),' out of total ',num2str(interval),' intervals']);
                   
-                  nx = length(unique(x)) ; 
-ny = length(unique(y)) ; 
-X = reshape(x,nx,ny) ; 
-Y = reshape(y,nx,ny) ; 
-Z = reshape(z,nx,ny) ; 
+                  
+%                   nx = length(unique(traceXNew(i,:).')) ; 
+%                   ny = length(unique(traceYNew(i,:).')) ;
+%                   X = traceXNew(i,:).';
+%                   Y = traceYNew(i,:).';
+%                   Z = VelocitySum.' ;
+                  traceGen.colormapMatrix(200e-9, 20, 100e-9, 10, traceXNew(i,:), traceYNew(i,:),Vx,Vy);
                   
                   figure(2);
                   title(ax1,['The average temperature is ',num2str(tempArray(i)),' K'])
@@ -261,6 +264,34 @@ Z = reshape(z,nx,ny) ;
               XBoxLogic = (X>boxEdge(1,1)&X<boxEdge(1,3))|(X>boxEdge(2,1)&X<boxEdge(2,3));
               YBoxLogic = (Y>boxEdge(1,2)&Y<boxEdge(1,4))|(Y>boxEdge(2,2)&Y<boxEdge(2,4));
               boxlogic = XBoxLogic&YBoxLogic;
+          end
+          
+          function colormapMatrix(xLim, xNSpace, yLim, yNSpace, xPos, yPos, Vx,Vy)
+              xSpace = xLim/xNSpace;
+              ySpace = yLim/yNSpace;
+              tempMatrix = zeros(yNSpace,xNSpace);
+              velocityArray = Vx.^2+Vy.^2;
+              kb = 1.3806504e-23; 
+              me = 0.26*9.10938215e-31;
+              
+              %use mean of squared velocity, due to the negative v
+              tempArray = 1/kb*(1/2*me.*velocityArray);
+              for i=1:xNSpace
+                  for j=1:yNSpace
+                      logicX = xPos>((i-1)*xSpace)&xPos<(i*xSpace);
+                      logicY = yPos>((j-1)*ySpace)&yPos<(j*ySpace);
+                      tempMatrix(j,i)=sum(tempArray(logicX&logicY));
+                      
+                      
+                  end
+              end
+              xAxis=linspace(xSpace,xLim,xNSpace);
+              yAxis=linspace(ySpace,yLim,yNSpace);
+              figure(4);
+              pcolor(xAxis,yAxis,tempMatrix);
+              title('color map for temperature');
+              shading interp
+              
           end
           
     end

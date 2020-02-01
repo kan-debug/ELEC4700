@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0079)file:///W:/Desktop/ELEC4700/git_playground/ELEC4700/A1/html/A1_scatter0127.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Part2  Collisions with Mean Free Path (MFP)</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-02-01"><meta name="DC.source" content="A1_scatter0127.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Part2  Collisions with Mean Free Path (MFP)</h1><p>Histogram, temperature and trajectories are included in plot, MFP and tmn are included in title Q1p3 assign position arrays</p><pre class="codeinput">close <span class="string">all</span>
+clearvars
+kb = 1.3806504e-23;               <span class="comment">% Boltzmann constant</span>
+T = 300;                          <span class="comment">% temperature, in Kalvin</span>
+me = 0.26*9.10938215e-31;         <span class="comment">% electron mass</span>
+<span class="comment">% with two degree of freedom: 2*1/2kT</span>
+VThermalMean = sqrt(2*kb*T/me);               <span class="comment">% thermal velocity</span>
+
+dt = 15e-15;
+i = 100;
+TStop = 1000 * dt;
+
+TTest = 1000;
+nParticles = 1000;
+nParticlesPlot = 10;
+<span class="comment">% trace initialization</span>
+TraceParticlesX = zeros(TStop/dt,nParticles);
+TraceParticlesY = zeros(TStop/dt,nParticles);
+<span class="comment">% assigning initial positions</span>
+PositionParticlesX = 200e-9*rand([1,nParticles]);
+PositionParticlesY = 100e-9*rand([1,nParticles]);
+<span class="comment">%add this to update function later</span>
+TraceParticlesX(1,:) = PositionParticlesX;
+TraceParticlesY(1,:) = PositionParticlesY;
+
+<span class="comment">% assigning initial velocity</span>
+AngleParticle = 360*rand([1,nParticles]);
+<span class="comment">%1e4 as deviation, thermal velocity as mean</span>
+VThermal = VThermalMean+1e4.*randn(1,nParticles);
+figure(1);
+histogram(VThermal);
+title(<span class="string">'Distribution of initial velocity'</span>);
+xlabel(<span class="string">'Velocity (m/s)'</span>);
+ylabel(<span class="string">'number of particles (1)'</span>);
+VelocityParticleX = VThermal.*cos(AngleParticle);
+VelocityParticleY = VThermal.*sin(AngleParticle);
+
+<span class="comment">% update trace, delete motiplier later on</span>
+[TraceParticlesX,TraceParticlesY] = traceGen.iterate(i,TraceParticlesX(:,1:nParticlesPlot),TraceParticlesY(:,1:nParticlesPlot),VelocityParticleX(:,1:nParticlesPlot),VelocityParticleY(:,1:nParticlesPlot),dt);
+
+
+<span class="comment">%</span>
+<span class="comment">% for R = 1:nParticles</span>
+<span class="comment">%     plot(TraceParticlesX(1:TTest,R),TraceParticlesY(1:TTest,R));</span>
+<span class="comment">%     pause(0.1);</span>
+<span class="comment">%     hold on;</span>
+<span class="comment">% end</span>
+
+xlim([0,300]*1e-9)
+ylim([0,200]*1e-9)
+grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="./A1_p2scatter_files/A1_scatter0127_01.png" alt=""> <img vspace="5" hspace="5" src="./A1_p2scatter_files/A1_scatter0127_02.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB® R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Part2  Collisions with Mean Free Path (MFP)
+% Histogram, temperature and trajectories are included in plot, MFP and tmn
+% are included in title
+% Q1p3
+% assign position arrays
+close all
+clearvars
+kb = 1.3806504e-23;               % Boltzmann constant
+T = 300;                          % temperature, in Kalvin
+me = 0.26*9.10938215e-31;         % electron mass
+% with two degree of freedom: 2*1/2kT
+VThermalMean = sqrt(2*kb*T/me);               % thermal velocity
+
+dt = 15e-15;
+i = 100;
+TStop = 1000 * dt;
+
+TTest = 1000;
+nParticles = 1000;
+nParticlesPlot = 10;
+% trace initialization
+TraceParticlesX = zeros(TStop/dt,nParticles);
+TraceParticlesY = zeros(TStop/dt,nParticles);
+% assigning initial positions
+PositionParticlesX = 200e-9*rand([1,nParticles]);
+PositionParticlesY = 100e-9*rand([1,nParticles]);
+%add this to update function later
+TraceParticlesX(1,:) = PositionParticlesX;
+TraceParticlesY(1,:) = PositionParticlesY;
+
+% assigning initial velocity
+AngleParticle = 360*rand([1,nParticles]);
+%1e4 as deviation, thermal velocity as mean
+VThermal = VThermalMean+1e4.*randn(1,nParticles);
+figure(1);
+histogram(VThermal);
+title('Distribution of initial velocity');
+xlabel('Velocity (m/s)');
+ylabel('number of particles (1)');
+VelocityParticleX = VThermal.*cos(AngleParticle);
+VelocityParticleY = VThermal.*sin(AngleParticle);
+
+% update trace, delete motiplier later on
+[TraceParticlesX,TraceParticlesY] = traceGen.iterate(i,TraceParticlesX(:,1:nParticlesPlot),TraceParticlesY(:,1:nParticlesPlot),VelocityParticleX(:,1:nParticlesPlot),VelocityParticleY(:,1:nParticlesPlot),dt);
+
+
+% 
+% for R = 1:nParticles
+%     plot(TraceParticlesX(1:TTest,R),TraceParticlesY(1:TTest,R));
+%     pause(0.1);
+%     hold on;
+% end
+
+xlim([0,300]*1e-9)
+ylim([0,200]*1e-9)
+grid on
+##### SOURCE END #####
+--></body></html>
