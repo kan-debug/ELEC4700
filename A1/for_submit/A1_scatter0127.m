@@ -1,6 +1,6 @@
-%% Part3 enhancements
-%% SECTION TITLE
-% DESCRIPTIVE TEXT
+%% Part2  Collisions with Mean Free Path (MFP)
+% Histogram, temperature and trajectories are included in plot, MFP and tmn
+% are included in title
 % Q1p3
 % assign position arrays
 close all
@@ -18,16 +18,12 @@ TStop = 1000 * dt;
 TTest = 1000;
 nParticles = 1000;
 nParticlesPlot = 10;
-Xlim = 200e-9;
-Ylim = 100e-9;
-
 % trace initialization
 TraceParticlesX = zeros(TStop/dt,nParticles);
 TraceParticlesY = zeros(TStop/dt,nParticles);
 % assigning initial positions
-% PositionParticlesX = Xlim*rand([1,nParticles]);
-% PositionParticlesY = Ylim*rand([1,nParticles]);
-[PositionParticlesX, PositionParticlesY] = traceGen.boxInit([50e-9;50e-9], [0;Ylim-40e-9], 50e-9, 40e-9, Xlim, Ylim,nParticles);
+PositionParticlesX = 200e-9*rand([1,nParticles]);
+PositionParticlesY = 100e-9*rand([1,nParticles]);
 %add this to update function later
 TraceParticlesX(1,:) = PositionParticlesX;
 TraceParticlesY(1,:) = PositionParticlesY;
@@ -45,7 +41,7 @@ VelocityParticleX = VThermal.*cos(AngleParticle);
 VelocityParticleY = VThermal.*sin(AngleParticle);
 
 % update trace, delete motiplier later on
-[TraceParticlesX,TraceParticlesY] = traceGen.iterate(i,TraceParticlesX(:,1:nParticlesPlot),TraceParticlesY(:,1:nParticlesPlot),VelocityParticleX(:,1:nParticlesPlot),VelocityParticleY(:,1:nParticlesPlot),dt);
+[TraceParticlesX,TraceParticlesY] = traceGen_p2.iterate(i,TraceParticlesX(:,1:nParticlesPlot),TraceParticlesY(:,1:nParticlesPlot),VelocityParticleX(:,1:nParticlesPlot),VelocityParticleY(:,1:nParticlesPlot),dt);
 
 
 % 

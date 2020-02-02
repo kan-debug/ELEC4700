@@ -1,34 +1,41 @@
-classdef traceGen
+classdef traceGen_p2
     methods(Static)
           
         %to reduce the horizontal trace, move the previous point towards
         %different boundary
         %logic indexing
           function [traceXNew,traceYNew] = iterate(interval,traceX,traceY, Vx, Vy, dt)
+              T=300;
+              [~,numParticle] = size(traceX);
               % assign initial values
               traceXNew = traceX;
               traceYNew = traceY;
               timeArray = linspace(0,dt*interval,interval+1);
               tempArray = zeros(interval);
+              LastCollision = zeros(1,numParticle);
+              NextCollision = zeros(1,numParticle);
+              FreePathHist = zeros(interval,numParticle);
+              
               
               %plot init
               figure(2);
               ax1 = subplot(2,1,1);
               ax2 = subplot(2,1,2);
-              
+              tag=[];
               %loop over dt
               for i=1:interval
                  
+                  [Vx,Vy,LastCollision,NextCollision,FreePathHist(i,:)]=traceGen_p2.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePathHist(i,:));
                   
                   %check whether the partical is going to hit boundary
                   Xnext = traceXNew(i,:)+(Vx*dt);
-                  checkX = traceGen.bounceCheck(Xnext,0,200e-9);
+                  checkX = traceGen_p2.bounceCheck(Xnext,0,200e-9);
                   Ynext = traceYNew(i,:)+(Vy*dt);
-                  checkY = traceGen.bounceCheck(Ynext,0,100e-9);
+                  checkY = traceGen_p2.bounceCheck(Ynext,0,100e-9);
                   
                   %next positions
-                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen.stepNext(checkX,traceXNew(i,:),Vx, dt,1);
-                  [traceYNew(i,:),traceYNew(i+1,:), Vy ]= traceGen.stepNext(checkY,traceYNew(i,:),Vy, dt,0);
+                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen_p2.stepNext(checkX,traceXNew(i,:),Vx, dt,1);
+                  [traceYNew(i,:),traceYNew(i+1,:), Vy ]= traceGen_p2.stepNext(checkY,traceYNew(i,:),Vy, dt,0);
                   
                   
 %                   plot(traceXNew(i:i+1,:),traceYNew(i:i+1,:));
@@ -36,7 +43,7 @@ classdef traceGen
 %                   hold on;
 %                   pause(0.01);
                   
-                  [~,numParticle] = size(traceXNew);
+                  
                   color=[1,1,1];
                   for n=1:numParticle
                       %put on ax1 does not work
@@ -47,10 +54,15 @@ classdef traceGen
                     color=color-[0.09,.09,0];
                   end
                   
-                  tempArray(i)=traceGen.getTemp(Vx, Vy);
+                  tempArray(i)=traceGen_p2.getTemp(Vx, Vy);
                   plot(ax1, timeArray(1:i),tempArray(1:i));
                   
                   title(ax1,['The average temperature is ',num2str(tempArray(i)),' K'])
+                  
+                  title(ax2,['The Mean Time of collision is ',num2str(mean(NextCollision-LastCollision)),' s'])
+                  delete(tag);
+                  tag = annotation('textbox', [0.7, 0.1, 0.1, 0.1], 'String', "MFP: "+num2str(mean(mean(FreePathHist(1:i,:))))+"m");
+                  
                   label
               end
           
@@ -72,6 +84,8 @@ classdef traceGen
           
           function [Pos, nextPos, nextVel] = stepNext(checkArray, position, Velocity, dt, mode)
               %mode defines the behavior of the collision
+              %THe previous position may be modified for the purpose of
+              %jumping over boundaries
               Pos = position;
               switch mode
                   case 0
@@ -97,11 +111,37 @@ classdef traceGen
                               Pos(i)=nextPos(i)-nextVel(i)*dt;
                           end
                       end
-                      
                   otherwise
                       fprintf('matlab NMSL, %d',mode)
               end
               
+          end
+          function [VxNext, VyNext,LastCollision,NextCollision,FreePath] = scatter(Vx,Vy,Temperature,LastCollision,NextCollision,FreePath)
+              %mode defines behavior for x,y,etc. 
+              %temperature is for determine the velocity after scatter
+              me = 0.26*9.10938215e-31;
+              kb = 1.3806504e-23;
+              
+              dt = 15e-15;
+              Tmean = 0.2e-12;
+              VThermalMean = sqrt(2*kb*Temperature/me);
+              Pscat=1-exp(-dt/Tmean);
+              
+              for i=1:numel(Vx)
+                  if rand()<Pscat
+                      AngleParticle = 360*rand(1,1);
+                      VThermal = VThermalMean+1e4.*randn(1,1);
+                      Vx(i) = VThermal.*cos(AngleParticle);
+                      Vy(i) = VThermal.*sin(AngleParticle);
+                      LastCollision(i)=NextCollision(i);
+                  else
+                      NextCollision(i)=NextCollision(i)+dt;
+                  end
+                  FreePath(i)=(NextCollision(i)-LastCollision(i))*sqrt(Vx(i)^2+Vy(i)^2);
+              end
+              
+              VxNext=Vx;
+              VyNext=Vy;
           end
           
           function temp = getTemp(Vx, Vy)

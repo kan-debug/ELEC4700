@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0083)file:///W:/Desktop/ELEC4700/git_playground/ELEC4700/A1/html/assignment1meeting.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Assignment 1</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-02-02"><meta name="DC.source" content="assignment1meeting.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Assignment 1</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="file:///W:/Desktop/ELEC4700/git_playground/ELEC4700/A1/html/assignment1meeting.html#1">P1Q1 Thermal Velocity</a></li><li><a href="file:///W:/Desktop/ELEC4700/git_playground/ELEC4700/A1/html/assignment1meeting.html#2">P1Q2 Mean Free Path</a></li><li><a href="file:///W:/Desktop/ELEC4700/git_playground/ELEC4700/A1/html/assignment1meeting.html#3">P1Q3, Q4 Particle trajectories and Thermal plot</a></li><li><a href="file:///W:/Desktop/ELEC4700/git_playground/ELEC4700/A1/html/assignment1meeting.html#4">P2 Velocity Distribution, Trajectories and Temperature plot</a></li><li><a href="file:///W:/Desktop/ELEC4700/git_playground/ELEC4700/A1/html/assignment1meeting.html#5">P3 Enhancements</a></li></ul></div><h2 id="1">P1Q1 Thermal Velocity</h2><p>Note a 2D plane would have a degree of freedom of 2, the effective mass is 0.26 times of the rest mass. (shouldn’t the mass be heavier?)</p><p><img src="./assignment1meeting_files/assignment1meeting_eq01984588127625865625.png" alt="$$1/2*m*Vthermal=2*1/2*kT$$"></p><p><img src="./assignment1meeting_files/assignment1meeting_eq03558945552628025838.png" alt="$Vthermal=sqrt(2kT/m)=1.8702e5$"> m/s</p><h2 id="2">P1Q2 Mean Free Path</h2><p><img src="./assignment1meeting_files/assignment1meeting_eq17660724563492776753.png" alt="$$MFP=Vthermal*tmean=0.2 ps*1.8702e5 m/s=3.7404e-8 m$$"></p><h2 id="3">P1Q3, Q4 Particle trajectories and Thermal plot</h2><p>The average temperature does not change, due to the fact that the magnitude of velocity for each particle does not vary. Therefore the related kinetic energy and temperature does not change.</p><p>The particles reflect when hitting top or bottom (direction of horizontal velocity flips), they jump to the other side when passing left or right boundary. The motion of jumping is valid when assuming the box next to it have the exactly same motion.</p><p>The specturm of color from light blue to deep blue indicates different particles, in total of 10 included in the plot. The A1_drawParticles_0115 contains code for initialization, and invokes traceGen_p1 file contains functions.</p><pre class="codeinput"> A1_drawParticles_0115
+<span class="comment">%</span>
+</pre><img vspace="5" hspace="5" src="./assignment1meeting_files/assignment1meeting_01.png" alt=""> <h2 id="4">P2 Velocity Distribution, Trajectories and Temperature plot</h2><p>The thermal velocity follows a normal distribution, with mean velocity sitting at thermal velocity for T=300K.</p><p>The particles has an exponential scattering probability, defined by mean time between collisions. Both mean time between collisions and mean free path are shown in figure below. Note the mean free path here has a small difference (typical 5%) comparing to the theoretical value. This is due to the scattering effect, which is statistical instead of deterministic. The simulated result verifies the calculation in part 1.</p><p>The temperature plot varies up and down with respect to a mean thermal velocity at around 300K. This is also due to the scattering effect. Note the jumping and reflection does not vary the velocity magnitude, therefore no effect on temperature.</p><pre class="codeinput"> A1_scatter0127
+<span class="comment">%</span>
+</pre><img vspace="5" hspace="5" src="./assignment1meeting_files/assignment1meeting_02.png" alt=""> <img vspace="5" hspace="5" src="./assignment1meeting_files/assignment1meeting_03.png" alt=""> <h2 id="5">P3 Enhancements</h2><p>The 'bottle neck' is added, the horizontal bondaries are specular and the verticle boundaries are diffusive. They are governed by the stepNext function inside traceGen_p3. The specular is the same as before, but the diffusive are added to assign new velocity while keeping particles inside.</p><p>The electron density map and the temperature map are done by dividing the region into smaller boxes, then sum the number of the electrons and the average temperature in the region</p><p>The temperature plot can really be improved by using the iterative method-&gt; the second derivative of the adjacent cells should be zero. However that's too much work. I could also make the boxes moving during the simulation, but that might confusing since you may think the particles leak through the boxes (but they are leaking to the history of the boxes).</p><p>The compensation I used for color map is the interpolation. Note that the position of the electrons have a direct effect on the temperature plot, with small randomness on each individual velocity.</p><p>The electrons are limited to a much smaller region here with the extisting bottle neck. However, the total kinetic energy in temperature is 300K, statistically there should be little lost/gain on that due to the scattering effect. The average temperature should still be around 300K.</p><pre class="codeinput"> A1_p3box
+</pre><img vspace="5" hspace="5" src="./assignment1meeting_files/assignment1meeting_04.png" alt=""> <img vspace="5" hspace="5" src="./assignment1meeting_files/assignment1meeting_05.png" alt=""> <img vspace="5" hspace="5" src="./assignment1meeting_files/assignment1meeting_06.png" alt=""> <img vspace="5" hspace="5" src="./assignment1meeting_files/assignment1meeting_07.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB® R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Assignment 1
+%% P1Q1 Thermal Velocity
+% Note a 2D plane would have a degree of freedom of 2, the effective mass is 0.26 times of the rest mass.
+% (shouldn’t the mass be heavier?)
+%
+% $$1/2*m*Vthermal=2*1/2*kT$$
+%
+% $Vthermal=sqrt(2kT/m)=1.8702e5$ m/s
+
+%% P1Q2 Mean Free Path
+% 
+% $$MFP=Vthermal*tmean=0.2 ps*1.8702e5 m/s=3.7404e-8 m$$
+% 
+
+%% P1Q3, Q4 Particle trajectories and Thermal plot
+% The average temperature does not change, due to the fact that the
+% magnitude of velocity for each particle does not vary. Therefore the
+% related kinetic energy and temperature does not change. 
+%
+% The particles reflect when hitting top or bottom (direction of horizontal velocity
+% flips), they jump to the other side when passing left or right boundary.
+% The motion of jumping is valid when assuming the box next to it have
+% the exactly same motion.
+% 
+% The specturm of color from light blue to deep blue indicates different
+% particles, in total of 10 included in the plot. The A1_drawParticles_0115
+% contains code for initialization, and
+% invokes traceGen_p1 file contains functions.
+
+ A1_drawParticles_0115
+% 
+
+%% P2 Velocity Distribution, Trajectories and Temperature plot
+% The thermal velocity follows a normal distribution, with mean velocity
+% sitting at thermal velocity for T=300K. 
+%
+% The particles has an exponential
+% scattering probability, defined by mean time between collisions. Both
+% mean time between collisions and mean free path are shown in figure
+% below. Note the mean free path here has a small difference (typical 5%)
+% comparing to the theoretical value. This is due to the scattering effect,
+% which is statistical instead of deterministic. The simulated result
+% verifies the calculation in part 1.
+%
+% The temperature plot varies up and down with respect to a mean thermal
+% velocity at around 300K. This is also due to the scattering effect. Note
+% the jumping and reflection does not vary the velocity magnitude,
+% therefore no effect on temperature.
+
+ A1_scatter0127
+% 
+
+%% P3 Enhancements
+% The 'bottle neck' is added, the horizontal bondaries are specular and the
+% verticle boundaries are diffusive. They are governed by the stepNext
+% function inside traceGen_p3. The specular is the same as before, but the
+% diffusive are added to assign new velocity while keeping particles
+% inside.
+%
+% The electron density map and the temperature map are done by dividing the
+% region into smaller boxes, then sum the number of the electrons and the
+% average temperature in the region
+%
+% The temperature plot can really be improved by using the iterative
+% method-> the second derivative of the adjacent cells should be zero.
+% However that's too much work. I could also make the boxes moving during
+% the simulation, but that might confusing since you may think the
+% particles leak through the boxes (but they are leaking to the history of
+% the boxes).
+%
+% The compensation I used for color map is the interpolation. Note that the
+% position of the electrons have a direct effect on the temperature plot,
+% with small randomness on each individual velocity.
+%
+% The electrons are limited to a much smaller region here with the
+% extisting bottle neck. However, the total kinetic energy in temperature
+% is 300K, statistically there should be little lost/gain on that due to
+% the scattering effect. The average temperature should still be around
+% 300K. 
+%
+
+
+ A1_p3box
+##### SOURCE END #####
+--></body></html>

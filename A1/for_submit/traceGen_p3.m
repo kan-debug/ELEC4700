@@ -1,4 +1,4 @@
-classdef traceGen
+classdef traceGen_p3
     methods(Static)
           
         %to reduce the horizontal trace, move the previous point towards
@@ -40,21 +40,21 @@ classdef traceGen
               %loop over dt
               for i=1:interval
                  
-                  [Vx,Vy,LastCollision,NextCollision,FreePathHist(i,:)]=traceGen.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePathHist(i,:));
+                  [Vx,Vy,LastCollision,NextCollision,FreePathHist(i,:)]=traceGen_p3.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePathHist(i,:));
                   
                   %check whether the partical is going to hit boundary for
                   %sides
                   Xnext = traceXNew(i,:)+(Vx*dt);
-                  checkX = traceGen.bounceCheck(Xnext,0,200e-9);
+                  checkX = traceGen_p3.bounceCheck(Xnext,0,200e-9);
                   Ynext = traceYNew(i,:)+(Vy*dt);
-                  checkY = traceGen.bounceCheck(Ynext,0,100e-9);
+                  checkY = traceGen_p3.bounceCheck(Ynext,0,100e-9);
                   %get particles over box, apply same logic to previous to
                   %know where particle comes from
                   
                   Xold=traceXNew(i,:);
                   Yold=traceYNew(i,:);
-                  [BoxLogicNext,~,~] = traceGen.boxcheck(Xnext,Ynext,[box1;box2]);
-                  [~,XLogicOld,YLogicOld] = traceGen.boxcheck(Xold,Yold,[box1;box2]);
+                  [BoxLogicNext,~,~] = traceGen_p3.boxcheck(Xnext,Ynext,[box1;box2]);
+                  [~,XLogicOld,YLogicOld] = traceGen_p3.boxcheck(Xold,Yold,[box1;box2]);
                   %get particles over box in X direction
                   
                   checkX(BoxLogicNext&(~XLogicOld))=-1;
@@ -65,8 +65,8 @@ classdef traceGen
                   
                   
                   %next positions
-                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen.stepNext(checkX,traceXNew(i,:),Vx, dt,0);
-                  [traceYNew(i,:),traceYNew(i+1,:), Vy, Vx ]= traceGen.stepNext(checkY,traceYNew(i,:),Vy, dt,2, Vx);
+                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen_p3.stepNext(checkX,traceXNew(i,:),Vx, dt,0);
+                  [traceYNew(i,:),traceYNew(i+1,:), Vy, Vx ]= traceGen_p3.stepNext(checkY,traceYNew(i,:),Vy, dt,2, Vx);
                   
                   
                   
@@ -82,7 +82,7 @@ classdef traceGen
                   end
                   
                   %temp
-                  tempArray(i)=traceGen.getTemp(Vx, Vy);
+                  tempArray(i)=traceGen_p3.getTemp(Vx, Vy);
                   plot(ax1, timeArray(1:i),tempArray(1:i));
                   figure(3);
                   hist3([traceXNew(i,:).',traceYNew(i,:).'],[20,10]);
@@ -94,7 +94,7 @@ classdef traceGen
 %                   X = traceXNew(i,:).';
 %                   Y = traceYNew(i,:).';
 %                   Z = VelocitySum.' ;
-                  traceGen.colormapMatrix(200e-9, 20, 100e-9, 10, traceXNew(i,:), traceYNew(i,:),Vx,Vy);
+                  traceGen_p3.colormapMatrix(200e-9, 20, 100e-9, 10, traceXNew(i,:), traceYNew(i,:),Vx,Vy);
                   
                   figure(2);
                   title(ax1,['The average temperature is ',num2str(tempArray(i)),' K'])
@@ -157,6 +157,7 @@ classdef traceGen
                   case 2 %thermal diffusion
                       %here velocity is the y velocity and v2 is x velocity
                       VelocitySum = sqrt(Velocity.^2+Velocity2.^2);
+                      %VelocitySum(checkArray==-1)=1.87019e5*randn(1,numel(VelocitySum(checkArray==-1)));
                       
                       %bottom boundary, Vy inital negative, resulting angle
                       %positive
