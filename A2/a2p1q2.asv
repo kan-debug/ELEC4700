@@ -108,8 +108,8 @@ for i = 1:nx
             %corners
             rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
             ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
-            EXmatrix(j, i) = -(Vmatrix(j, i+1)-Vmatrix(j, i));
-            EYmatrix(j, i) = -(Vmatrix(j+1, i)-Vmatrix(j, i));
+            EXmatrix = -(Vmatrix(j, i+1)-Vmatrix(j, i));
+            EYmatrix = -(Vmatrix(j+1, i)-Vmatrix(j, i));
             Jxp= (Vmatrix(j, i+1)-Vmatrix(j, i))/rxp;
             Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/rxp;
             JXmatrix(j, i) = -Jxp;
@@ -118,8 +118,8 @@ for i = 1:nx
         elseif i==1 &&j==ny
             rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
             rym = (rMap(j,i) + rMap(j-1,i))/2.0;
-            EXmatrix(j, i) = -(Vmatrix(j, i+1)-Vmatrix(j, i));
-            EYmatrix(j, i) = Vmatrix(j-1, i)-Vmatrix(j, i);
+            EXmatrix = -(Vmatrix(j, i+1)-Vmatrix(j, i));
+            EYmatrix = Vmatrix(j-1, i)-Vmatrix(j, i);
             Jxp= (Vmatrix(j, i+1)-Vmatrix(j, i))/rxp;
             Jym= (Vmatrix(j-1, i)-Vmatrix(j, i))/rxp;
             JXmatrix(j, i) = -Jxp;
@@ -127,8 +127,8 @@ for i = 1:nx
         elseif i==nx &&j==1
             rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
             ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
-            EXmatrix(j, i) = +Vmatrix(j, i-1)-Vmatrix(j, i);
-            EYmatrix(j, i) = -(Vmatrix(j+1, i)-Vmatrix(j, i));
+            EXmatrix = +Vmatrix(j, i-1)-Vmatrix(j, i);
+            EYmatrix = -(Vmatrix(j+1, i)-Vmatrix(j, i));
             Jxm= (Vmatrix(j, i-1)-Vmatrix(j, i))/rxp;
             Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/rxp;
             JXmatrix(j, i) = Jxm;
@@ -136,8 +136,8 @@ for i = 1:nx
         elseif i==nx &&j==ny    
             rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
             rym = (rMap(j,i) + rMap(j-1,i))/2.0;
-            EXmatrix(j, i) = +Vmatrix(j, i-1)-Vmatrix(j, i);
-            EYmatrix(j, i) = +Vmatrix(j-1, i)-Vmatrix(j, i);
+            EXmatrix = +Vmatrix(j, i-1)-Vmatrix(j, i);
+            EYmatrix = +Vmatrix(j-1, i)-Vmatrix(j, i);
             Jxm= (Vmatrix(j, i-1)-Vmatrix(j, i))/rxp;
             Jym= (Vmatrix(j-1, i)-Vmatrix(j, i))/rxp;
             JXmatrix(j, i) = Jxm;
@@ -147,8 +147,8 @@ for i = 1:nx
             rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
             rym = (rMap(j,i) + rMap(j-1,i))/2.0;
             ryp = (rMap(j,i) + rMap(j-1,i))/2.0;
-            EXmatrix(j, i) = -(Vmatrix(j, i+1)-Vmatrix(j, i));
-            EYmatrix(j, i) = -(Vmatrix(j+1, i)-Vmatrix(j, i))+Vmatrix(j-1, i)-Vmatrix(j, i);
+            EXmatrix = -(Vmatrix(j, i+1)-Vmatrix(j, i))+Vmatrix(j, i-1)-Vmatrix(j, i);
+            EYmatrix = -(Vmatrix(j+1, i)-Vmatrix(j, i))+Vmatrix(j-1, i)-Vmatrix(j, i);
             Jxp= (Vmatrix(j, i+1)-Vmatrix(j, i))/rxp;
             Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/rxp;
             Jym= (Vmatrix(j-1, i)-Vmatrix(j, i))/rxp;
@@ -159,8 +159,8 @@ for i = 1:nx
             rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
             rym = (rMap(j,i) + rMap(j-1,i))/2.0;
             ryp = (rMap(j,i) + rMap(j-1,i))/2.0;
-            EXmatrix(j, i) = Vmatrix(j, i-1)-Vmatrix(j, i);
-            EYmatrix(j, i) = -(Vmatrix(j+1, i)-Vmatrix(j, i))+Vmatrix(j-1, i)-Vmatrix(j, i);
+            EXmatrix = Vmatrix(j, i-1)-Vmatrix(j, i);
+            EYmatrix = -(Vmatrix(j+1, i)-Vmatrix(j, i))+Vmatrix(j-1, i)-Vmatrix(j, i);
             Jxm= (Vmatrix(j, i-1)-Vmatrix(j, i))/rxp;
             Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/rxp;
             Jym= (Vmatrix(j-1, i)-Vmatrix(j, i))/rxp;
@@ -171,8 +171,8 @@ for i = 1:nx
             rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
             rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
             ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
-            EXmatrix(j, i) = -(Vmatrix(j, i+1)-Vmatrix(j, i))+Vmatrix(j, i-1)-Vmatrix(j, i);
-            EYmatrix(j, i) = -(Vmatrix(j+1, i)-Vmatrix(j, i));
+            EXmatrix = -(Vmatrix(j, i+1)-Vmatrix(j, i))+Vmatrix(j, i-1)-Vmatrix(j, i);
+            EYmatrix = -(Vmatrix(j+1, i)-Vmatrix(j, i));
             Jxp= (Vmatrix(j, i+1)-Vmatrix(j, i))/rxp;
             Jxm= (Vmatrix(j, i-1)-Vmatrix(j, i))/rxp;
             Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/rxp;
@@ -183,8 +183,6 @@ for i = 1:nx
             rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
             rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
             rym = (rMap(j,i) + rMap(j-1,i))/2.0;
-            EXmatrix(j, i) = -(Vmatrix(j, i+1)-Vmatrix(j, i))+Vmatrix(j, i-1)-Vmatrix(j, i);
-            EYmatrix(j, i) = Vmatrix(j-1, i)-Vmatrix(j, i);
             Jxp= (Vmatrix(j, i+1)-Vmatrix(j, i))/rxp;
             Jxm= (Vmatrix(j, i-1)-Vmatrix(j, i))/rxp;
             Jym= (Vmatrix(j-1, i)-Vmatrix(j, i))/rxp;
@@ -196,8 +194,6 @@ for i = 1:nx
             rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
             rym = (rMap(j,i) + rMap(j-1,i))/2.0;
             ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
-            EXmatrix(j, i) = -(Vmatrix(j, i+1)-Vmatrix(j, i))+Vmatrix(j, i-1)-Vmatrix(j, i);
-            EYmatrix(j, i) = -(Vmatrix(j+1, i)-Vmatrix(j, i))+Vmatrix(j-1, i)-Vmatrix(j, i);
             Jxp= (Vmatrix(j, i+1)-Vmatrix(j, i))/rxp;
             Jxm= (Vmatrix(j, i-1)-Vmatrix(j, i))/rxp;
             Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/rxp;
@@ -216,8 +212,5 @@ ylabel('y dimention')
 title('Current Density Map, notice box region')
 
 figure(4)
-quiver(EXmatrix,EYmatrix);
-xlabel('x dimention')
-ylabel('y dimention')
-title('Electrical field Map')
+
 
