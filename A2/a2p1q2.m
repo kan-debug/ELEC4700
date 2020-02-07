@@ -73,6 +73,7 @@ for i = 1:nx
             G(n,nyp) = ryp;
         end
         % not really derivative but actual voltages
+        % why resistance in each nodes instead of in between them
         
         
     end
@@ -92,12 +93,102 @@ figure(2)
 H = surf(Vmatrix);
 xlabel('x dimention')
 ylabel('y dimention')
+title('Voltage map')
 
-Imatrix = zeros(ny,nx);
+JXmatrix = zeros(ny,nx);
+JYmatrix = zeros(ny,nx);
+figure(3)
 for i = 1:nx
     for j = 1:ny
+        if i==1 &&j==1
+            %corners
+            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
+            ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
+            Jxp= (Vmatrix(j, i+1)-Vmatrix(j, i))/rxp;
+            Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/rxp;
+            JXmatrix(j, i) = Jxp;
+            JYmatrix(j, i) = Jyp;
+        elseif i==1 &&j==ny
+            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
+            rym = (rMap(j,i) + rMap(j-1,i))/2.0;
+            Jxp= (Vmatrix(j, i+1)-Vmatrix(j, i))/rxp;
+            Jym= (Vmatrix(j-1, i)-Vmatrix(j, i))/rxp;
+            JXmatrix(j, i) = Jxp;
+            JYmatrix(j, i) = -Jym;
+        elseif i==nx &&j==1
+            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
+            ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
+            Jxm= (Vmatrix(j, i-1)-Vmatrix(j, i))/rxp;
+            Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/rxp;
+            JXmatrix(j, i) = -Jxm;
+            JYmatrix(j, i) = Jyp;
+        elseif i==nx &&j==ny    
+            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
+            rym = (rMap(j,i) + rMap(j-1,i))/2.0;
+            Jxm= (Vmatrix(j, i-1)-Vmatrix(j, i))/rxp;
+            Jym= (Vmatrix(j-1, i)-Vmatrix(j, i))/rxp;
+            JXmatrix(j, i) = -Jxm;
+            JYmatrix(j, i) = -Jym;
+        elseif i==1
+            %left
+            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
+            rym = (rMap(j,i) + rMap(j-1,i))/2.0;
+            ryp = (rMap(j,i) + rMap(j-1,i))/2.0;
+            Jxp= (Vmatrix(j, i+1)-Vmatrix(j, i))/rxp;
+            Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/rxp;
+            Jym= (Vmatrix(j-1, i)-Vmatrix(j, i))/rxp;
+            JXmatrix(j, i) = Jxp;
+            JYmatrix(j, i) = Jyp-Jym;
+        elseif i==nx
+            %right
+            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
+            rym = (rMap(j,i) + rMap(j-1,i))/2.0;
+            ryp = (rMap(j,i) + rMap(j-1,i))/2.0;
+            Jxm= (Vmatrix(j, i-1)-Vmatrix(j, i))/rxp;
+            Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/rxp;
+            Jym= (Vmatrix(j-1, i)-Vmatrix(j, i))/rxp;
+            JXmatrix(j, i) = -Jxm;
+            JYmatrix(j, i) = Jyp-Jym;
+        elseif j==1
+            %bottom
+            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
+            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
+            ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
+            Jxp= (Vmatrix(j, i+1)-Vmatrix(j, i))/rxp;
+            Jxm= (Vmatrix(j, i-1)-Vmatrix(j, i))/rxp;
+            Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/rxp;
+            JXmatrix(j, i) = Jxp-Jxm;
+            JYmatrix(j, i) = Jyp;
+        elseif j==ny
+            %top
+            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
+            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
+            rym = (rMap(j,i) + rMap(j-1,i))/2.0;
+            Jxp= (Vmatrix(j, i+1)-Vmatrix(j, i))/rxp;
+            Jxm= (Vmatrix(j, i-1)-Vmatrix(j, i))/rxp;
+            Jym= (Vmatrix(j-1, i)-Vmatrix(j, i))/rxp;
+            JXmatrix(j, i) = Jxp-Jxm;
+            JYmatrix(j, i) = -Jym;
+            
+        else
+            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
+            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
+            rym = (rMap(j,i) + rMap(j-1,i))/2.0;
+            ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
+            Jxp= (Vmatrix(j, i+1)-Vmatrix(j, i))/rxp;
+            Jxm= (Vmatrix(j, i-1)-Vmatrix(j, i))/rxp;
+            Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/rxp;
+            Jym= (Vmatrix(j-1, i)-Vmatrix(j, i))/rxp;
+            JXmatrix(j, i) = Jxp-Jxm;
+            JYmatrix(j, i) = Jyp-Jym;
+        end
         
-        Imatrix(j, i) = Vmatrix(j, i);
     end
 end
+
+
+H = quiver(JXmatrix,JYmatrix);
+xlabel('x dimention')
+ylabel('y dimention')
+title('Current density')
 
