@@ -6,17 +6,26 @@ close all
 % analytical approach the solution by iterating over n in the Tayler
 % series, errors from iteration
 % numerical solution gets error from step size
-nx = 21;
-ny = 21;
+nx = 51;
+ny = 41;
 iteration =30;
 V0 = 1;
 matrixV = zeros(ny,nx);
 
 G = sparse(nx*ny);
 B = zeros(1,nx*ny);
-cMap = ones(nx,ny);
+rMap = ones(ny,nx);
+resistance1 = 100;
+rMap = dropBox(rMap, nx, ny, resistance1, [int8(nx/3),int8(2*nx/3)], [0,int8(ny/3)]);
+rMap = dropBox(rMap, nx, ny, resistance1, [int8(nx/3),int8(2*nx/3)], [int8(2*ny/3),ny]);
+sigmaMap=1./rMap;
 
 figure(1)
+surf(sigmaMap)
+title('conduction map')
+xlabel('x axis')
+ylabel('y axis')
+
 %loop across iteration
 
 for i = 1:nx
@@ -50,10 +59,12 @@ for i = 1:nx
             nym = j-1 + (i-1)*ny;
             nyp = j+1 + (i-1)*ny;
             
-            rxm = (cMap(i,j) + cMap(i-1,j))/2.0;
-            rxp = (cMap(i,j) + cMap(i+1,j))/2.0;
-            rym = (cMap(i,j) + cMap(i,j-1))/2.0;
-            ryp = (cMap(i,j) + cMap(i,j+1))/2.0;
+            %dimension modified, j as y in this loop, but j is x in the
+            %ramp
+            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
+            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
+            rym = (rMap(j,i) + rMap(j-1,i))/2.0;
+            ryp = (rMap(j,i) + rMap(j-1,i))/2.0;
             
             G(n,n) = -(rxm+rxp+rym+ryp);
             G(n,nxm) = rxm;
@@ -68,6 +79,7 @@ for i = 1:nx
     
 end
 Vvector = G\B';
+%mapping
 Vmatrix = zeros(ny,nx);
 for i = 1:nx
     for j = 1:ny
@@ -76,30 +88,16 @@ for i = 1:nx
         Vmatrix(j, i) = Vvector(n);
     end
 end
-subplot(2, 1, 1), H = surf(Vmatrix);
+figure(2)
+H = surf(Vmatrix);
 xlabel('x dimention')
 ylabel('y dimention')
 
-%note the width and length are not nx, ny
-Vanalytical = zeros(ny,nx);
-for n=1:2:201
-    for i = 1:nx
-        for j = 1:ny
-            
-            iNorm = i-1-(nx-1)/2;
-            jNorm = j-1;
-            
-            Vanalytical(j, i)=Vanalytical(j, i)+4*V0/pi*(1/n)*(cosh(n*pi*iNorm/(ny-1))/cosh(n*pi*(nx-1)/(ny-1)/2))*sin(n*pi*jNorm/(ny-1));
-            
-            
-        end
-        subplot(2, 1, 2), H = surf(Vanalytical);
-        xlabel('x dimention')
-        ylabel('y dimention')
+Imatrix = zeros(ny,nx);
+for i = 1:nx
+    for j = 1:ny
+        
+        Imatrix(j, i) = Vmatrix(j, i);
     end
-    
-    
-    pause(0.01);
-    
-    
 end
+
