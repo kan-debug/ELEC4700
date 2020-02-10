@@ -1,4 +1,6 @@
-clearvars
+function [currentX,currentY] = get_current(nx,ny, sigma,size_box_x,size_box_y)
+
+
 close all
 %initialize matrix
 % comments 
@@ -6,18 +8,16 @@ close all
 % analytical approach the solution by iterating over n in the Tayler
 % series, errors from iteration
 % numerical solution gets error from step size
-nx = 51;
-ny = 41;
-iteration =30;
+
 V0 = 1;
-matrixV = zeros(ny,nx);
 
 G = sparse(nx*ny);
 B = zeros(1,nx*ny);
 rMap = ones(ny,nx);
-resistance1 = 100;
-rMap = dropBox(rMap, nx, ny, resistance1, [int8(nx/3),int8(2*nx/3)], [0,int8(ny/3)]);
-rMap = dropBox(rMap, nx, ny, resistance1, [int8(nx/3),int8(2*nx/3)], [int8(2*ny/3),ny]);
+resistance1 = 1/sigma;
+halfW=int8(size_box_x/2);
+rMap = dropBox(rMap, nx, ny, resistance1, [int8(nx/2)-halfW,int8(nx/2)+halfW], [0,size_box_y]);
+rMap = dropBox(rMap, nx, ny, resistance1, [int8(nx/2)-halfW,int8(nx/2)+halfW], [ny-size_box_y,ny]);
 sigmaMap=1./rMap;
 
 figure(1)
@@ -99,7 +99,7 @@ JXmatrix = zeros(ny,nx);
 JYmatrix = zeros(ny,nx);
 EXmatrix = zeros(ny,nx);
 EYmatrix = zeros(ny,nx);
-figure(3)
+
 %note the current from xm yield a positive current
 %vise versa
 for i = 1:nx
@@ -208,19 +208,20 @@ for i = 1:nx
         
     end
 end
-
-
-H = quiver(JXmatrix,JYmatrix);
-xlabel('x dimention')
-ylabel('y dimention')
-title('Current Density Map, notice box region')
-
-figure(4)
-quiver(EXmatrix,EYmatrix);
-xlabel('x dimention')
-ylabel('y dimention')
-title('Electrical field Map')
+% 
+% figure(3)
+% H = quiver(JXmatrix,JYmatrix);
+% xlabel('x dimention')
+% ylabel('y dimention')
+% title('Current Density Map, notice box region')
+% 
+% figure(4)
+% quiver(EXmatrix,EYmatrix);
+% xlabel('x dimention')
+% ylabel('y dimention')
+% title('Electrical field Map')
 %current vs mesh-> sum of the current? Unit?
-Ix=sum(sum(JXmatrix(:,1:(nx+1)/2)))
-Iy=sum(sum(JYmatrix(:,1:(nx+1)/2)))
+currentX=sum(sum(JXmatrix(:,1:(nx+1)/2)));
+currentY=sum(sum(JYmatrix(:,1:(nx+1)/2)));
 
+end
