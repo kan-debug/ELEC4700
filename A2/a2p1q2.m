@@ -40,31 +40,51 @@ for i = 1:nx
             % right
             G(n, :) = 0;
             G(n, n) = 1;
-            B(n) = V0;
+            B(n) = 0;
         elseif j == 1
             % bottom except for two sides
             % avoid index over boundary
-            G(n, :) = 0;
-            G(n, n) = 1;
-            B(n) = 0;
-            
-        elseif j ==  ny
-            % top
-            G(n, :) = 0;
-            G(n, n) = 1;
-            B(n) = 0;
-        else
             nxm = j + (i-2)*ny;
             nxp = j + (i)*ny;
-            nym = j-1 + (i-1)*ny;
             nyp = j+1 + (i-1)*ny;
             
             %dimension modified, j as y in this loop, but j is x in the
             %ramp
             rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
             rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
+            ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
+            
+            G(n,n) = -(rxm+rxp+ryp);
+            G(n,nxm) = rxm;
+            G(n,nxp) = rxp;
+            G(n,nyp) = ryp;
+            
+        elseif j ==  ny
+            % top
+            nxm = j + (i-2)*ny;
+            nxp = j + (i)*ny;
+            nym = j-1 + (i-1)*ny;
+            
+            
+            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
+            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
             rym = (rMap(j,i) + rMap(j-1,i))/2.0;
-            ryp = (rMap(j,i) + rMap(j-1,i))/2.0;
+            
+            G(n,n) = -(rxm+rxp+rym);
+            G(n,nxm) = rxm;
+            G(n,nxp) = rxp;
+            G(n,nym) = rym;
+        else
+            nxm = j + (i-2)*ny;
+            nxp = j + (i)*ny;
+            nym = j-1 + (i-1)*ny;
+            nyp = j+1 + (i-1)*ny;
+            
+            
+            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
+            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
+            rym = (rMap(j,i) + rMap(j-1,i))/2.0;
+            ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
             
             G(n,n) = -(rxm+rxp+rym+ryp);
             G(n,nxm) = rxm;

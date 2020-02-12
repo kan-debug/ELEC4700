@@ -1,7 +1,7 @@
-function [currentX,currentY] = get_current(nx,ny, sigma,size_box_x,size_box_y)
+function [currentX,currentY] = get_current(stepsizeX,stepsizeY, sigma,size_box_x,size_box_y)
 
 
-close all
+
 %initialize matrix
 % comments 
 %analytical takes longer time numerical takes more memory
@@ -10,14 +10,24 @@ close all
 % numerical solution gets error from step size
 
 V0 = 1;
+%the coordinate value
+xRange = 51;
+yRange = 41;
+%sweep parameter, useful?
+x_sweep = 1:stepsizeX:xRange;
+y_sweep = 1:stepsizeY:yRange;
+%sweep elements
+el_x = numel(x_sweep);
+el_y = numel(y_sweep);
 
-G = sparse(nx*ny);
-B = zeros(1,nx*ny);
-rMap = ones(ny,nx);
+G = sparse(el_x*el_y);
+B = zeros(1,el_x*el_y);
+rMap = ones(el_y,el_x);
 resistance1 = 1/sigma;
 halfW=int8(size_box_x/2);
-rMap = dropBox(rMap, nx, ny, resistance1, [int8(nx/2)-halfW,int8(nx/2)+halfW], [0,size_box_y]);
-rMap = dropBox(rMap, nx, ny, resistance1, [int8(nx/2)-halfW,int8(nx/2)+halfW], [ny-size_box_y,ny]);
+%need change resolution
+rMap = dropBox(rMap, xRange, yRange, resistance1, [int8(xRange/2)-halfW,int8(xRange/2)+halfW], [0,size_box_y],stepsizeX,stepsizeY);
+rMap = dropBox(rMap, xRange, yRange, resistance1, [int8(xRange/2)-halfW,int8(xRange/2)+halfW], [yRange-size_box_y,yRange],stepsizeX,stepsizeY);
 sigmaMap=1./rMap;
 
 figure(1)
@@ -28,43 +38,63 @@ ylabel('y axis')
 
 %loop across iteration
 
-for i = 1:nx
-    for j = 1:ny
-        n = j + (i - 1) * ny;
+for i = 1:el_x
+    for j = 1:el_y
+        n = j + (i - 1) * el_y;
         if i == 1
             % left define V(G(n))=B(n)
             G(n, :) = 0;
             G(n, n) = 1;
             B(n) = V0;
-        elseif i == nx
+        elseif i == el_x
             % right
             G(n, :) = 0;
             G(n, n) = 1;
-            B(n) = V0;
+            B(n) = 0;
         elseif j == 1
             % bottom except for two sides
             % avoid index over boundary
-            G(n, :) = 0;
-            G(n, n) = 1;
-            B(n) = 0;
-            
-        elseif j ==  ny
-            % top
-            G(n, :) = 0;
-            G(n, n) = 1;
-            B(n) = 0;
-        else
-            nxm = j + (i-2)*ny;
-            nxp = j + (i)*ny;
-            nym = j-1 + (i-1)*ny;
-            nyp = j+1 + (i-1)*ny;
+            nxm = j + (i-2)*el_y;
+            nxp = j + (i)*el_y;
+            nyp = j+1 + (i-1)*el_y;
             
             %dimension modified, j as y in this loop, but j is x in the
             %ramp
             rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
             rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
+            ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
+            
+            G(n,n) = -(rxm+rxp+ryp);
+            G(n,nxm) = rxm;
+            G(n,nxp) = rxp;
+            G(n,nyp) = ryp;
+            
+        elseif j ==  el_y
+            % top
+            nxm = j + (i-2)*el_y;
+            nxp = j + (i)*el_y;
+            nym = j-1 + (i-1)*el_y;
+            
+            
+            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
+            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
             rym = (rMap(j,i) + rMap(j-1,i))/2.0;
-            ryp = (rMap(j,i) + rMap(j-1,i))/2.0;
+            
+            G(n,n) = -(rxm+rxp+rym);
+            G(n,nxm) = rxm;
+            G(n,nxp) = rxp;
+            G(n,nym) = rym;
+        else
+            nxm = j + (i-2)*el_y;
+            nxp = j + (i)*el_y;
+            nym = j-1 + (i-1)*el_y;
+            nyp = j+1 + (i-1)*el_y;
+            
+            
+            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
+            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
+            rym = (rMap(j,i) + rMap(j-1,i))/2.0;
+            ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
             
             G(n,n) = -(rxm+rxp+rym+ryp);
             G(n,nxm) = rxm;
@@ -81,10 +111,10 @@ for i = 1:nx
 end
 Vvector = G\B';
 %mapping
-Vmatrix = zeros(ny,nx);
-for i = 1:nx
-    for j = 1:ny
-        n = j + (i - 1) * ny;
+Vmatrix = zeros(el_y,el_x);
+for i = 1:el_x
+    for j = 1:el_y
+        n = j + (i - 1) * el_y;
         
         Vmatrix(j, i) = Vvector(n);
     end
@@ -95,15 +125,15 @@ xlabel('x dimention')
 ylabel('y dimention')
 title('Voltage map')
 
-JXmatrix = zeros(ny,nx);
-JYmatrix = zeros(ny,nx);
-EXmatrix = zeros(ny,nx);
-EYmatrix = zeros(ny,nx);
+JXmatrix = zeros(el_y,el_x);
+JYmatrix = zeros(el_y,el_x);
+EXmatrix = zeros(el_y,el_x);
+EYmatrix = zeros(el_y,el_x);
 
 %note the current from xm yield a positive current
 %vise versa
-for i = 1:nx
-    for j = 1:ny
+for i = 1:el_x
+    for j = 1:el_y
         if i==1 &&j==1
             %corners
             rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
@@ -115,7 +145,7 @@ for i = 1:nx
             JXmatrix(j, i) = -Jxp;
             JYmatrix(j, i) = -Jyp;
             
-        elseif i==1 &&j==ny
+        elseif i==1 &&j==el_y
             rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
             rym = (rMap(j,i) + rMap(j-1,i))/2.0;
             EXmatrix(j, i) = -(Vmatrix(j, i+1)-Vmatrix(j, i));
@@ -124,7 +154,7 @@ for i = 1:nx
             Jym= (Vmatrix(j-1, i)-Vmatrix(j, i))/rym;
             JXmatrix(j, i) = -Jxp;
             JYmatrix(j, i) = Jym;
-        elseif i==nx &&j==1
+        elseif i==el_x &&j==1
             rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
             ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
             EXmatrix(j, i) = +Vmatrix(j, i-1)-Vmatrix(j, i);
@@ -133,7 +163,7 @@ for i = 1:nx
             Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/ryp;
             JXmatrix(j, i) = Jxm;
             JYmatrix(j, i) = -Jyp;
-        elseif i==nx &&j==ny    
+        elseif i==el_x &&j==el_y    
             rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
             rym = (rMap(j,i) + rMap(j-1,i))/2.0;
             EXmatrix(j, i) = +Vmatrix(j, i-1)-Vmatrix(j, i);
@@ -154,7 +184,7 @@ for i = 1:nx
             Jym= (Vmatrix(j-1, i)-Vmatrix(j, i))/rym;
             JXmatrix(j, i) = -Jxp;
             JYmatrix(j, i) = -Jyp+Jym;
-        elseif i==nx
+        elseif i==el_x
             %right
             rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
             rym = (rMap(j,i) + rMap(j-1,i))/2.0;
@@ -178,7 +208,7 @@ for i = 1:nx
             Jyp= (Vmatrix(j+1, i)-Vmatrix(j, i))/ryp;
             JXmatrix(j, i) = -Jxp+Jxm;
             JYmatrix(j, i) = -Jyp;
-        elseif j==ny
+        elseif j==el_y
             %top
             rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
             rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
@@ -221,7 +251,7 @@ end
 % ylabel('y dimention')
 % title('Electrical field Map')
 %current vs mesh-> sum of the current? Unit?
-currentX=sum(sum(JXmatrix(:,1:(nx+1)/2)));
-currentY=sum(sum(JYmatrix(:,1:(nx+1)/2)));
+currentX=sum(sum(JXmatrix(:,1)));
+currentY=sum(sum(JYmatrix(:,1)));
 
 end
