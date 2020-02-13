@@ -92,4 +92,5 @@ end
 H = surf(Vmatrix');
 xlabel('x dimention')
 ylabel('y dimention')
-
+zlabel('z dimention')
+view(60,-30)

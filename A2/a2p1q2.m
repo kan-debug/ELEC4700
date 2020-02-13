@@ -114,6 +114,8 @@ H = surf(Vmatrix);
 xlabel('x dimention')
 ylabel('y dimention')
 title('Voltage map')
+zlabel('z dimention')
+view(60,-30)
 
 JXmatrix = zeros(ny,nx);
 JYmatrix = zeros(ny,nx);
