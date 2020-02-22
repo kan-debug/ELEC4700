@@ -1,0 +1,14 @@
+n and p doped in the middle
+P>n, p majority, resulting a positive voltage
+diff/drift? mainly diffusion but p pulling n?
+recombination
+n,p,np-ni down, what's max n max p?
+
+new file: const Nd
+disturbance result constant n and p?
+disturbance is the initial normal distribution
+
+coupled in if condition -> rho is zero!
+two carriers-> single carrier why accumulate on sides
+RC -> two carriers condition-> recombination
+whyyyyy does RC off np still goes uniform????

@@ -239,19 +239,20 @@ for i = 1:el_x
     end
 end
 % 
-% figure(3)
-% H = quiver(JXmatrix,JYmatrix);
-% xlabel('x dimention')
-% ylabel('y dimention')
-% title('Current Density Map, notice box region')
+figure(3)
+H = quiver(JXmatrix,-JYmatrix);
+xlabel('x dimention')
+ylabel('y dimention')
+title('Current Density Map, notice box region')
 % 
-% figure(4)
-% quiver(EXmatrix,EYmatrix);
-% xlabel('x dimention')
-% ylabel('y dimention')
-% title('Electrical field Map')
-%current vs mesh-> sum of the current? Unit?
-currentX=sum(sum(JXmatrix(:,1)));
-currentY=sum(sum(JYmatrix(:,1)));
+figure(4)
+quiver(EXmatrix,EYmatrix);
+xlabel('x dimention')
+ylabel('y dimention')
+title('Electrical field Map')
+% current vs mesh-> sum of the current? Unit?
+
+currentX=sum(JXmatrix(:,2));
+currentY=sum(JYmatrix(:,2));
 
 end

@@ -115,7 +115,6 @@ xlabel('x dimention')
 ylabel('y dimention')
 title('Voltage map')
 zlabel('z dimention')
-view(60,-30)
 
 JXmatrix = zeros(ny,nx);
 JYmatrix = zeros(ny,nx);
@@ -232,17 +231,15 @@ for i = 1:nx
 end
 
 
-H = quiver(JXmatrix,JYmatrix);
+H = quiver(JXmatrix,-JYmatrix);
 xlabel('x dimention')
 ylabel('y dimention')
 title('Current Density Map, notice box region')
 
 figure(4)
-quiver(EXmatrix,EYmatrix);
+quiver(EXmatrix,-EYmatrix);
 xlabel('x dimention')
 ylabel('y dimention')
 title('Electrical field Map')
 %current vs mesh-> sum of the current? Unit?
-Ix=sum(sum(JXmatrix(:,1:(nx+1)/2)))
-Iy=sum(sum(JYmatrix(:,1:(nx+1)/2)))
 

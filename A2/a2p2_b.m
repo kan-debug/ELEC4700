@@ -5,8 +5,6 @@ sigma=0.01;
 size_bn_x =14;
 size_bn_y =14;
 %steps
-nx = 1;
-ny=1;
 
 %units?
 
@@ -51,7 +49,7 @@ xlabel('box size')
 ylabel('current')
 subplot(3,1,3),plot(sigma_sweep,sigma_sweep_current(1,1:numel(sigma_sweep)));
 title('current versus sigma')
-xlabel('box size')
+xlabel('sigma inside box')
 ylabel('current')
 set(gca, 'XScale', 'log')
 

@@ -1,9 +1,7 @@
 clearvars
-close all
 %initialize matrix
 nx = 20;
 ny = 20;
-iteration =30;
 matrixV = zeros(ny,nx);
 
 G = sparse(nx*ny);
@@ -89,6 +87,7 @@ for i = 1:nx
         Vmatrix(j, i) = Vvector(n);
     end
 end
+figure(3)
 H = surf(Vmatrix');
 xlabel('x dimention')
 ylabel('y dimention')
