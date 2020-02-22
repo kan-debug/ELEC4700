@@ -1,4 +1,5 @@
 %30*20 grid
+close all
 clearvars
 nx = 30;
 ny = 20;
