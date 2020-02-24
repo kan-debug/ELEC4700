@@ -65,18 +65,20 @@ classdef traceGen_p3
                   
                   
                   %next positions
-                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen_p3.stepNext(checkX,traceXNew(i,:),Vx, dt,0);
-                  [traceYNew(i,:),traceYNew(i+1,:), Vy, Vx ]= traceGen_p3.stepNext(checkY,traceYNew(i,:),Vy, dt,2, Vx);
+                  %Note step next will modify previous value
+                  %If Vy is stepped first, the second statement may also
+                  %alter the velocity
+                  [traceXNew(i,:), traceXNew(i+1,:), Vx, Vy ]= traceGen_p3.stepNext(checkX,traceXNew(i,:),Vx, dt,2,Vy);
+                  [traceYNew(i,:),traceYNew(i+1,:), Vy ]= traceGen_p3.stepNext(checkY,traceYNew(i,:),Vy, dt,0);
                   
                   
                   
-                  
+                  %this limit # of traces
                   color=[1,1,1];
-                  for n=1:numParticle
+                  for n=1:10
                       %put on ax1 does not work
                     plot(ax2,traceXNew(i:i+1,n),traceYNew(i:i+1,n),'color',color);
-                    %remove hold on to see bug in water
-                    
+
                     pause(0.001);
                     color=color-[0.09,.09,0];
                   end
@@ -102,7 +104,7 @@ classdef traceGen_p3
                   delete(tag);
                   tag = annotation('textbox', [0.7, 0.1, 0.1, 0.1], 'String', "MFP: "+num2str(mean(mean(FreePathHist(1:i,:))))+"m");
                   
-                  label
+                  
               end
           
           end

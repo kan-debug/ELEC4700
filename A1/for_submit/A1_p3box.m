@@ -17,7 +17,7 @@ TStop = 1000 * dt;
 
 TTest = 1000;
 nParticles = 1000;
-nParticlesPlot = 10;
+nParticlesPlot = 100;
 Xlim = 200e-9;
 Ylim = 100e-9;
 
