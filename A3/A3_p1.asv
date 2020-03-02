@@ -1,7 +1,4 @@
-%% Part3 enhancements
-%% SECTION TITLE
-% DESCRIPTIVE TEXT
-% Q1p3
+
 % assign position arrays
 close all
 clearvars
@@ -47,17 +44,13 @@ Ay = Ey*q/me
 AngleParticle = 360*rand([1,nParticles]);
 %1e4 as deviation, thermal velocity as mean
 VThermal = VThermalMean+1e4.*randn(1,nParticles);
-figure(1);
-histogram(VThermal);
-title('Distribution of initial velocity');
-xlabel('Velocity (m/s)');
-ylabel('number of particles (1)');
+% figure(1);
+% histogram(VThermal);
+% title('Distribution of initial velocity');
+% xlabel('Velocity (m/s)');
+% ylabel('number of particles (1)');
 VelocityParticleX = VThermal.*cos(AngleParticle);
 VelocityParticleY = VThermal.*sin(AngleParticle);
 
 % update trace, delete motiplier later on
 [TraceParticlesX,TraceParticlesY] = traceGen_p3.iterate(i,TraceParticlesX(:,1:nParticlesPlot),TraceParticlesY(:,1:nParticlesPlot),VelocityParticleX(:,1:nParticlesPlot),VelocityParticleY(:,1:nParticlesPlot),dt, Ax, Ay);
-
-xlim([0,300]*1e-9)
-ylim([0,200]*1e-9)
-grid on
