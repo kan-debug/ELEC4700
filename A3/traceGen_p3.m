@@ -4,7 +4,7 @@ classdef traceGen_p3
         %to reduce the horizontal trace, move the previous point towards
         %different boundary
         %logic indexing
-          function [traceXNew,traceYNew] = iterate(interval,traceX,traceY, Vx, Vy, dt, Ax, Ay)
+          function [traceXNew,traceYNew] = iterate(interval,traceX,traceY, Vx, Vy, dt, MatrixAx, MatrixAy)
               T=300;
               q = -1.602e-19;
               [~,numParticle] = size(traceX);
@@ -23,7 +23,6 @@ classdef traceGen_p3
               figure(2);
               ax1 = subplot(2,1,1);
               ax2 = subplot(2,1,2);
-              tag=[];
               
               %loop over dt
               for i=1:interval
@@ -47,10 +46,16 @@ classdef traceGen_p3
                   %Note step next will modify previous value
                   %If Vy is stepped first, the second statement may also
                   %alter the velocity
-                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen_p3.stepNext(checkX,traceXNew(i,:),Vx, dt,0,0,Ax);
-                  [traceYNew(i,:),traceYNew(i+1,:), Vy ]= traceGen_p3.stepNext(checkY,traceYNew(i,:),Vy, dt,0,0,Ay);
+                  x_map = traceXNew(i,:).*(50/200e-9)+1;
+                  y_map = traceYNew(i,:).*(40/100e-9)+1;
+                  Ax = griddata (1:51,1:41,MatrixAx,x_map,y_map);
+                  Ay = griddata (1:51,1:41,MatrixAy,x_map,y_map);
                   
+                  %where does 1/2 in acceloration come from?
+                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen_p3.stepNext(checkX,traceXNew(i,:),Vx, dt,1,0,Ax*(50/200e-9/2));
+                  [traceYNew(i,:),traceYNew(i+1,:), Vy ]= traceGen_p3.stepNext(checkY,traceYNew(i,:),Vy, dt,0,0,Ay*(40/100e-9/2));
                   
+                  figure(2)
                   hold on
                   %this limit # of traces
                   color=[1,1,1];
@@ -61,7 +66,7 @@ classdef traceGen_p3
                     pause(0.001);
                     color=color-[0.09,.09,0];
                   end
-                  %hold off
+                  hold off
                   
                   %temp
                   tempArray(i)=traceGen_p3.getTemp(Vx, Vy);
@@ -78,10 +83,8 @@ classdef traceGen_p3
                   figure(2);
                   title(ax1,['The average temperature is ',num2str(tempArray(i)),' K'])
                   title(ax2,['The Mean Time of collision is ',num2str(mean(NextCollision-LastCollision)),' s'])
-                  delete(tag);
-                  tag = annotation('textbox', [0.7, 0.1, 0.1, 0.1], 'String', "MFP: "+num2str(mean(mean(FreePathHist(1:i,:))))+"m");
                   figure(5)
-                  hold off
+                  
                   JArray(i)=q*numel(Vx)*sqrt(sum(Vx)^2+sum(Vy)^2);
                   plot(timeArray(1:i),JArray(1:i));
                   title('net current density')
@@ -116,15 +119,17 @@ classdef traceGen_p3
               switch mode
                   case 0
                       %reflection and normal probagation
+                      Acceloration(isnan(Acceloration))=zeros(1,numel(Acceloration(isnan(Acceloration))));
                       nextVel = checkArray.*Velocity+Acceloration*dt;
                       nextPos = position + nextVel.*dt;
                       
                   case 1
                       %jump
+                      Acceloration(isnan(Acceloration))=zeros(1,numel(Acceloration(isnan(Acceloration))));
                       
                       boundary1=0;
                       boundary2=200*1e-9;
-                      nextVel = Velocity;
+                      nextVel = Velocity+Acceloration*dt;
                       nextPos = position + nextVel.*dt;
                       
                       for i=1:numel(nextPos)

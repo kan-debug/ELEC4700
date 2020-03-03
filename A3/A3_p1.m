@@ -18,8 +18,8 @@ i = 100;
 TStop = 1000 * dt;
 
 TTest = 1000;
-nParticles = 1000;
-nParticlesPlot = 100;
+nParticles = 10000;
+nParticlesPlot = 1000;
 Xlim = 200e-9;
 Ylim = 100e-9;
 
@@ -35,12 +35,7 @@ TraceParticlesX(1,:) = PositionParticlesX;
 TraceParticlesY(1,:) = PositionParticlesY;
 
 %assigning acceloration and displaying it
-Ex = -xVolt/Xlim
-Ey = -yVolt/Ylim
-Fx = Ex*q
-Fy = Ey*q
-Ax = Ex*q/me
-Ay = Ey*q/me
+[Ax,Ay] = fieldGen(1,1,1);
 
 % assigning initial velocity
 AngleParticle = 360*rand([1,nParticles]);
