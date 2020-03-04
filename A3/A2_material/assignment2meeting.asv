@@ -92,7 +92,7 @@ a2p2q1
 % $R=rho*l/A$
 %
 % where in this case l is the independent variable, and A is constant 41
-% (2D case, the area is the cross-sectional length).
+% (2D case, the unit of )
 %
 % Higher sigma means a higher conductivity, lower resistivity in the box region. 
 % The resistance is dominated by the smallest terms in the above resistors,

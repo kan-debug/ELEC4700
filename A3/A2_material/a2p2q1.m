@@ -50,9 +50,9 @@ for i = 1:nx
             
             %dimension modified, j as y in this loop, but j is x in the
             %ramp
-            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
-            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
-            ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
+            rxm = (sigmaMap(j,i) + sigmaMap(j,i-1))/2.0;
+            rxp = (sigmaMap(j,i) + sigmaMap(j,i+1))/2.0;
+            ryp = (sigmaMap(j,i) + sigmaMap(j+1,i))/2.0;
             
             G(n,n) = -(rxm+rxp+ryp);
             G(n,nxm) = rxm;
@@ -66,9 +66,9 @@ for i = 1:nx
             nym = j-1 + (i-1)*ny;
             
             
-            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
-            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
-            rym = (rMap(j,i) + rMap(j-1,i))/2.0;
+            rxm = (sigmaMap(j,i) + sigmaMap(j,i-1))/2.0;
+            rxp = (sigmaMap(j,i) + sigmaMap(j,i+1))/2.0;
+            rym = (sigmaMap(j,i) + sigmaMap(j-1,i))/2.0;
             
             G(n,n) = -(rxm+rxp+rym);
             G(n,nxm) = rxm;
@@ -81,10 +81,10 @@ for i = 1:nx
             nyp = j+1 + (i-1)*ny;
             
             
-            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
-            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
-            rym = (rMap(j,i) + rMap(j-1,i))/2.0;
-            ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
+            rxm = (sigmaMap(j,i) + sigmaMap(j,i-1))/2.0;
+            rxp = (sigmaMap(j,i) + sigmaMap(j,i+1))/2.0;
+            rym = (sigmaMap(j,i) + sigmaMap(j-1,i))/2.0;
+            ryp = (sigmaMap(j,i) + sigmaMap(j+1,i))/2.0;
             
             G(n,n) = -(rxm+rxp+rym+ryp);
             G(n,nxm) = rxm;
@@ -105,7 +105,6 @@ Vmatrix = zeros(ny,nx);
 for i = 1:nx
     for j = 1:ny
         n = j + (i - 1) * ny;
-        
         Vmatrix(j, i) = Vvector(n);
     end
 end
@@ -231,13 +230,13 @@ for i = 1:nx
 end
 
 
-H = quiver(JXmatrix,-JYmatrix);
+H = quiver(JXmatrix,JYmatrix);
 xlabel('x dimention')
 ylabel('y dimention')
 title('Current Density Map, notice box region')
 
 figure(4)
-quiver(EXmatrix,-EYmatrix);
+quiver(EXmatrix,EYmatrix);
 xlabel('x dimention')
 ylabel('y dimention')
 title('Electrical field Map')

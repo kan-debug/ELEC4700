@@ -68,7 +68,8 @@ classdef traceGen_p3
                   %Note step next will modify previous value
                   %If Vy is stepped first, the second statement may also
                   %alter the velocity
-                  [traceXNew(i,:), traceXNew(i+1,:), Vx, Vy ]= traceGen_p3.stepNext(checkX,traceXNew(i,:),Vx, dt,2,Vy);
+                  
+                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen_p3.stepNext(checkX,traceXNew(i,:),Vx, dt,0);
                   [traceYNew(i,:),traceYNew(i+1,:), Vy ]= traceGen_p3.stepNext(checkY,traceYNew(i,:),Vy, dt,0);
                   
                   

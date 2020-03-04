@@ -60,9 +60,9 @@ for i = 1:el_x
             
             %dimension modified, j as y in this loop, but j is x in the
             %ramp
-            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
-            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
-            ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
+            rxm = (sigmaMap(j,i) + sigmaMap(j,i-1))/2.0;
+            rxp = (sigmaMap(j,i) + sigmaMap(j,i+1))/2.0;
+            ryp = (sigmaMap(j,i) + sigmaMap(j+1,i))/2.0;
             
             G(n,n) = -(rxm+rxp+ryp);
             G(n,nxm) = rxm;
@@ -76,9 +76,9 @@ for i = 1:el_x
             nym = j-1 + (i-1)*el_y;
             
             
-            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
-            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
-            rym = (rMap(j,i) + rMap(j-1,i))/2.0;
+            rxm = (sigmaMap(j,i) + sigmaMap(j,i-1))/2.0;
+            rxp = (sigmaMap(j,i) + sigmaMap(j,i+1))/2.0;
+            rym = (sigmaMap(j,i) + sigmaMap(j-1,i))/2.0;
             
             G(n,n) = -(rxm+rxp+rym);
             G(n,nxm) = rxm;
@@ -91,10 +91,10 @@ for i = 1:el_x
             nyp = j+1 + (i-1)*el_y;
             
             
-            rxm = (rMap(j,i) + rMap(j,i-1))/2.0;
-            rxp = (rMap(j,i) + rMap(j,i+1))/2.0;
-            rym = (rMap(j,i) + rMap(j-1,i))/2.0;
-            ryp = (rMap(j,i) + rMap(j+1,i))/2.0;
+            rxm = (sigmaMap(j,i) + sigmaMap(j,i-1))/2.0;
+            rxp = (sigmaMap(j,i) + sigmaMap(j,i+1))/2.0;
+            rym = (sigmaMap(j,i) + sigmaMap(j-1,i))/2.0;
+            ryp = (sigmaMap(j,i) + sigmaMap(j+1,i))/2.0;
             
             G(n,n) = -(rxm+rxp+rym+ryp);
             G(n,nxm) = rxm;
@@ -240,7 +240,7 @@ for i = 1:el_x
 end
 % 
 figure(3)
-H = quiver(JXmatrix,-JYmatrix);
+H = quiver(JXmatrix,JYmatrix);
 xlabel('x dimention')
 ylabel('y dimention')
 title('Current Density Map, notice box region')
