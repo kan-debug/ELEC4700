@@ -1,4 +1,4 @@
-classdef traceGen_p3
+classdef traceGen_p2
     methods(Static)
           
         %to reduce the horizontal trace, move the previous point towards
@@ -13,10 +13,10 @@ classdef traceGen_p3
               traceYNew = traceY;
               timeArray = linspace(0,dt*interval,interval+1);
               tempArray = zeros(interval);
-              JArray = zeros(interval);
               LastCollision = zeros(1,numParticle);
               NextCollision = zeros(1,numParticle);
               FreePathHist = zeros(interval,numParticle);
+              JArray = zeros(interval);
               
               
               %plot init
@@ -24,20 +24,43 @@ classdef traceGen_p3
               ax1 = subplot(2,1,1);
               ax2 = subplot(2,1,2);
               
+             
+              
+              %box init and plot
+              
+              box1 = [0.5,0,1,0.4]*1e-7;
+              box2 = [0.5,0.6,1,1]*1e-7;
+              
+              XBox1 = [box1(1) box1(1) box1(3) box1(3) box1(1)]; YBox1 = [box1(2) box1(4) box1(4) box1(2) box1(2)];
+              XBox2 = [box2(1) box2(1) box2(3) box2(3) box2(1)]; YBox2 = [box2(2) box2(4) box2(4) box2(2) box2(2)];
+              
+              plot(ax2,XBox1,YBox1);
+              hold on;
+              plot(ax2,XBox2,YBox2);
+              
               %loop over dt
               for i=1:interval
                  
-                  [Vx,Vy,LastCollision,NextCollision,FreePathHist(i,:)]=traceGen_p3.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePathHist(i,:));
+                  [Vx,Vy,LastCollision,NextCollision,FreePathHist(i,:)]=traceGen_p2.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePathHist(i,:));
                   
                   %check whether the partical is going to hit boundary for
                   %sides
                   Xnext = traceXNew(i,:)+(Vx*dt);
-                  checkX = traceGen_p3.bounceCheck(Xnext,0,200e-9);
+                  checkX = traceGen_p2.bounceCheck(Xnext,0,200e-9);
                   Ynext = traceYNew(i,:)+(Vy*dt);
-                  checkY = traceGen_p3.bounceCheck(Ynext,0,100e-9);
+                  checkY = traceGen_p2.bounceCheck(Ynext,0,100e-9);
                   %get particles over box, apply same logic to previous to
                   %know where particle comes from
-                 
+                  
+                  Xold=traceXNew(i,:);
+                  Yold=traceYNew(i,:);
+                  [BoxLogicNext,~,~] = traceGen_p2.boxcheck(Xnext,Ynext,[box1;box2]);
+                  [~,XLogicOld,YLogicOld] = traceGen_p2.boxcheck(Xold,Yold,[box1;box2]);
+                  %get particles over box in X direction
+                  
+                  checkX(BoxLogicNext&(~XLogicOld))=-1;
+                  checkY(BoxLogicNext&(~YLogicOld))=-1;
+                  
                   %all particles hitting the box need to know boundary
                   %hitting
                   
@@ -51,9 +74,10 @@ classdef traceGen_p3
                   Ax = griddata (1:51,1:41,MatrixAx,x_map,y_map);
                   Ay = griddata (1:51,1:41,MatrixAy,x_map,y_map);
                   
-                  %where does 1/2 in acceloration come from?
-                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen_p3.stepNext(checkX,traceXNew(i,:),Vx, dt,1,0,Ax*(50/200e-9/2));
-                  [traceYNew(i,:),traceYNew(i+1,:), Vy ]= traceGen_p3.stepNext(checkY,traceYNew(i,:),Vy, dt,0,0,Ay*(40/100e-9/2));
+                  
+                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen_p2.stepNext(checkX,traceXNew(i,:),Vx, dt,0,0,Ax*(50/200e-9/2));
+                  [traceYNew(i,:),traceYNew(i+1,:), Vy ]= traceGen_p2.stepNext(checkY,traceYNew(i,:),Vy, dt,0,0,Ay*(40/100e-9/2));
+                  
                   
                   figure(2)
                   hold on
@@ -69,7 +93,7 @@ classdef traceGen_p3
                   hold off
                   
                   %temp
-                  tempArray(i)=traceGen_p3.getTemp(Vx, Vy);
+                  tempArray(i)=traceGen_p2.getTemp(Vx, Vy);
                   plot(ax1, timeArray(1:i),tempArray(1:i));
                   figure(3);
                   hist3([traceXNew(i,:).',traceYNew(i,:).'],[20,10]);
@@ -78,7 +102,7 @@ classdef traceGen_p3
                   title(['This is interval',num2str(i),' out of total ',num2str(interval),' intervals']);
                   
                   
-                  traceGen_p3.colormapMatrix(200e-9, 20, 100e-9, 10, traceXNew(i,:), traceYNew(i,:),Vx,Vy);
+                  traceGen_p2.colormapMatrix(200e-9, 20, 100e-9, 10, traceXNew(i,:), traceYNew(i,:),Vx,Vy);
                   
                   figure(2);
                   title(ax1,['The average temperature is ',num2str(tempArray(i)),' K'])
@@ -118,18 +142,17 @@ classdef traceGen_p3
               anglebottom=zeros(1,numel(checkArray));
               switch mode
                   case 0
-                      %reflection and normal probagation
+                      %reflection
                       Acceloration(isnan(Acceloration))=zeros(1,numel(Acceloration(isnan(Acceloration))));
-                      nextVel = checkArray.*Velocity+Acceloration*dt;
+                      nextVel = checkArray.*(Velocity+Acceloration*dt);
                       nextPos = position + nextVel.*dt;
                       
                   case 1
                       %jump
-                      Acceloration(isnan(Acceloration))=zeros(1,numel(Acceloration(isnan(Acceloration))));
                       
                       boundary1=0;
                       boundary2=200*1e-9;
-                      nextVel = Velocity+Acceloration*dt;
+                      nextVel = Velocity;
                       nextPos = position + nextVel.*dt;
                       
                       for i=1:numel(nextPos)
@@ -277,8 +300,8 @@ classdef traceGen_p3
               xAxis=linspace(xSpace,xLim,xNSpace);
               yAxis=linspace(ySpace,yLim,yNSpace);
               figure(4);
-              surf(xAxis,yAxis,tempMatrix)
-              title('surf map for temperature');
+              pcolor(xAxis,yAxis,tempMatrix);
+              title('color map for temperature');
               shading interp
               
           end

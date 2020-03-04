@@ -49,12 +49,12 @@ for i = 1:el_x
             % left define V(G(n))=B(n)
             G(n, :) = 0;
             G(n, n) = 1;
-            B(n) = 0;
+            B(n) = V0;
         elseif i == el_x
             % right
             G(n, :) = 0;
             G(n, n) = 1;
-            B(n) = V0;
+            B(n) = 0;
         elseif j == 1
             % bottom except for two sides
             % avoid index over boundary

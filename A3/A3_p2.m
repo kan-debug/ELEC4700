@@ -27,15 +27,15 @@ Ylim = 100e-9;
 TraceParticlesX = zeros(TStop/dt,nParticles);
 TraceParticlesY = zeros(TStop/dt,nParticles);
 % assigning initial positions
-PositionParticlesX = Xlim*rand([1,nParticles]);
-PositionParticlesY = Ylim*rand([1,nParticles]);
-%[PositionParticlesX, PositionParticlesY] = traceGen_p3.boxInit([50e-9;50e-9], [0;Ylim-40e-9], 50e-9, 40e-9, Xlim, Ylim,nParticles);
+% PositionParticlesX = Xlim*rand([1,nParticles]);
+% PositionParticlesY = Ylim*rand([1,nParticles]);
+[PositionParticlesX, PositionParticlesY] = traceGen_p2.boxInit([75e-9;125e-9], [0;Ylim-40e-9], 50e-9, 40e-9, Xlim, Ylim,nParticles);
 %add this to update function later
 TraceParticlesX(1,:) = PositionParticlesX;
 TraceParticlesY(1,:) = PositionParticlesY;
 
 %assigning acceloration and displaying it
-[Ax,Ay] = fieldGen(1,1,1);
+[Ax,Ay] = fieldGen(1,1,0.01,int8(0.5e-7/2e-7*51),int8(0.4e-7/1e-7*41));
 
 % assigning initial velocity
 AngleParticle = 360*rand([1,nParticles]);
@@ -50,4 +50,4 @@ VelocityParticleX = VThermal.*cos(AngleParticle);
 VelocityParticleY = VThermal.*sin(AngleParticle);
 
 % update trace, delete motiplier later on
-[TraceParticlesX,TraceParticlesY] = traceGen_p3.iterate(i,TraceParticlesX(:,1:nParticlesPlot),TraceParticlesY(:,1:nParticlesPlot),VelocityParticleX(:,1:nParticlesPlot),VelocityParticleY(:,1:nParticlesPlot),dt, Ax, Ay);
+[TraceParticlesX,TraceParticlesY] = traceGen_p2.iterate(i,TraceParticlesX(:,1:nParticlesPlot),TraceParticlesY(:,1:nParticlesPlot),VelocityParticleX(:,1:nParticlesPlot),VelocityParticleY(:,1:nParticlesPlot),dt, Ax, Ay);
