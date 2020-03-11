@@ -4,7 +4,7 @@ classdef traceGen_p2
         %to reduce the horizontal trace, move the previous point towards
         %different boundary
         %logic indexing
-          function [traceXNew,traceYNew] = iterate(interval,traceX,traceY, Vx, Vy, dt, MatrixAx, MatrixAy)
+          function [current_density,densityX,densityY] = iterate(interval,traceX,traceY, Vx, Vy, dt, MatrixAx, MatrixAy, box1, box2)
               T=300;
               q = -1.602e-19;
               [~,numParticle] = size(traceX);
@@ -16,20 +16,21 @@ classdef traceGen_p2
               LastCollision = zeros(1,numParticle);
               NextCollision = zeros(1,numParticle);
               FreePathHist = zeros(interval,numParticle);
-              JArray = zeros(interval);
+              JArray = zeros(1,interval);
               
               
               %plot init
               figure(2);
               ax1 = subplot(2,1,1);
               ax2 = subplot(2,1,2);
-              
+
+              title(ax1,'The average temperature versus time')
+              title(ax2,'The 2D trajectory of particles')
              
               
               %box init and plot
               
-              box1 = [0.75,0,1.25,0.4]*1e-7;
-              box2 = [0.75,0.6,1.25,1]*1e-7;
+              
               
               XBox1 = [box1(1) box1(1) box1(3) box1(3) box1(1)]; YBox1 = [box1(2) box1(4) box1(4) box1(2) box1(2)];
               XBox2 = [box2(1) box2(1) box2(3) box2(3) box2(1)]; YBox2 = [box2(2) box2(4) box2(4) box2(2) box2(2)];
@@ -42,7 +43,7 @@ classdef traceGen_p2
               for i=1:interval
                  
                   [Vx,Vy,LastCollision,NextCollision,FreePathHist(i,:)]=traceGen_p2.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePathHist(i,:));
-                  
+                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen_p2.stepNext(0,traceXNew(i,:),Vx, dt,1);
                   %check whether the partical is going to hit boundary for
                   %sides
                   Xnext = traceXNew(i,:)+(Vx*dt);
@@ -80,6 +81,7 @@ classdef traceGen_p2
                   
                   
                   figure(2)
+                  title(['This is interval',num2str(i),' out of total ',num2str(interval),' intervals']);
                   hold on
                   %this limit # of traces
                   color=[1,1,1];
@@ -95,26 +97,28 @@ classdef traceGen_p2
                   %temp
                   tempArray(i)=traceGen_p2.getTemp(Vx, Vy);
                   plot(ax1, timeArray(1:i),tempArray(1:i));
-                  figure(3);
-                  hist3([traceXNew(i,:).',traceYNew(i,:).'],[20,10]);
+                  figure(3)
+                  
+                  hist3([traceXNew(i,:).',traceYNew(i,:).'],[20,10])
                     set(gcf,'renderer','opengl');
                     set(get(gca,'child'),'FaceColor','interp','CDataMode','auto');
-                  title(['This is interval',num2str(i),' out of total ',num2str(interval),' intervals']);
+                  view(20,45)
+                  
+                  %temperature color map
+%                   traceGen_p2.colormapMatrix(200e-9, 20, 100e-9, 10, traceXNew(i,:), traceYNew(i,:),Vx,Vy);
                   
                   
-                  traceGen_p2.colormapMatrix(200e-9, 20, 100e-9, 10, traceXNew(i,:), traceYNew(i,:),Vx,Vy);
-                  
-                  figure(2);
-                  title(ax1,['The average temperature is ',num2str(tempArray(i)),' K'])
-                  title(ax2,['The Mean Time of collision is ',num2str(mean(NextCollision-LastCollision)),' s'])
                   figure(5)
-                  
+                  %current density
                   JArray(i)=q*numel(Vx)*sqrt(sum(Vx)^2+sum(Vy)^2);
                   plot(timeArray(1:i),JArray(1:i));
                   title('net current density')
                   
               end
-          
+              %takes the later quarter mean of Jarray
+              current_density = mean(JArray(int8(numel(JArray)/4):end));
+              densityX = traceXNew(interval,:);
+              densityY = traceYNew(interval,:);
           end
           
           function checkArray = bounceCheck(pos,limLow,limHigh)

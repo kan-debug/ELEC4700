@@ -23,6 +23,9 @@ nParticlesPlot = 1000;
 Xlim = 200e-9;
 Ylim = 100e-9;
 
+box1 = zeros(1,4);
+box2 = zeros(1,4);
+
 % trace initialization
 TraceParticlesX = zeros(TStop/dt,nParticles);
 TraceParticlesY = zeros(TStop/dt,nParticles);
@@ -33,9 +36,6 @@ TraceParticlesY = zeros(TStop/dt,nParticles);
 %add this to update function later
 TraceParticlesX(1,:) = PositionParticlesX;
 TraceParticlesY(1,:) = PositionParticlesY;
-
-%assigning acceloration and displaying it
-[Ax,Ay] = fieldGen(1,1,0.01,int8(0.5e-7/2e-7*51),int8(0.4e-7/1e-7*41));
 
 % assigning initial velocity
 AngleParticle = 360*rand([1,nParticles]);
@@ -49,5 +49,44 @@ VThermal = VThermalMean+1e4.*randn(1,nParticles);
 VelocityParticleX = VThermal.*cos(AngleParticle);
 VelocityParticleY = VThermal.*sin(AngleParticle);
 
-% update trace, delete motiplier later on
-[TraceParticlesX,TraceParticlesY] = traceGen_p2.iterate(i,TraceParticlesX(:,1:nParticlesPlot),TraceParticlesY(:,1:nParticlesPlot),VelocityParticleX(:,1:nParticlesPlot),VelocityParticleY(:,1:nParticlesPlot),dt, Ax, Ay);
+% sweep box size
+size_sweep = 0.05:0.05:0.25;
+counter = 0;
+size_sweep_current = zeros(1,numel(size_sweep));
+% row->sweeps column->each particle
+densityX = zeros(numel(size_sweep),nParticlesPlot);
+densityY = zeros(numel(size_sweep),nParticlesPlot);
+
+
+
+for j=size_sweep
+
+counter = counter +1;
+
+box1 = [1-size_sweep(counter),0,1+size_sweep(counter),0+2*size_sweep(counter)]*1e-7;
+box2 = [box1(1),(1-2*size_sweep(counter))*1e-7,box1(3),1*1e-7];
+box_width = size_sweep(counter)*2e-7;
+box_height = size_sweep(counter)*2e-7;
+%acceloration
+[Ax,Ay] = fieldGen(1,1,0.01,int8(box_width/2e-7*51),int8(box_height/1e-7*41));
+
+[size_sweep_current(counter),densityX(counter,:),densityY(counter,:)] = traceGen_p2.iterate(i,TraceParticlesX(:,1:nParticlesPlot),TraceParticlesY(:,1:nParticlesPlot),VelocityParticleX(:,1:nParticlesPlot),VelocityParticleY(:,1:nParticlesPlot),dt, Ax, Ay, box1, box2);
+end 
+
+close all
+figure(1)
+plot(size_sweep*1e-7,abs(size_sweep_current(1:numel(size_sweep))))
+title('current density versus box size')
+xlabel('box size')
+ylabel('current density')
+
+%density maps
+for m = 1:numel(size_sweep)
+    figure(m+1)
+    hist3([densityX(m,:).',densityY(m,:).'],[20,10])
+    set(gcf,'renderer','opengl');
+    set(get(gca,'child'),'FaceColor','interp','CDataMode','auto');
+    title(['Particle density at the end with box size ',num2str(size_sweep(m)*1e-7),' m']);
+    view(20,45)
+    
+end

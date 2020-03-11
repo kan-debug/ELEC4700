@@ -23,15 +23,13 @@ classdef traceGen_p2
               figure(2);
               ax1 = subplot(2,1,1);
               ax2 = subplot(2,1,2);
-
-              title(ax1,'The average temperature versus time')
-              title(ax2,'The 2D trajectory of particles')
+              
              
               
               %box init and plot
               
-              box1 = [0.75,0,1.25,0.4]*1e-7;
-              box2 = [0.75,0.6,1.25,1]*1e-7;
+              box1 = [0.5,0,1,0.4]*1e-7;
+              box2 = [0.5,0.6,1,1]*1e-7;
               
               XBox1 = [box1(1) box1(1) box1(3) box1(3) box1(1)]; YBox1 = [box1(2) box1(4) box1(4) box1(2) box1(2)];
               XBox2 = [box2(1) box2(1) box2(3) box2(3) box2(1)]; YBox2 = [box2(2) box2(4) box2(4) box2(2) box2(2)];
@@ -44,7 +42,7 @@ classdef traceGen_p2
               for i=1:interval
                  
                   [Vx,Vy,LastCollision,NextCollision,FreePathHist(i,:)]=traceGen_p2.scatter(Vx,Vy,T,LastCollision,NextCollision,FreePathHist(i,:));
-                  [traceXNew(i,:), traceXNew(i+1,:), Vx ]= traceGen_p2.stepNext(0,traceXNew(i,:),Vx, dt,1);
+                  
                   %check whether the partical is going to hit boundary for
                   %sides
                   Xnext = traceXNew(i,:)+(Vx*dt);
@@ -103,15 +101,17 @@ classdef traceGen_p2
                     set(get(gca,'child'),'FaceColor','interp','CDataMode','auto');
                   title(['This is interval',num2str(i),' out of total ',num2str(interval),' intervals']);
                   
-                  %temperature color map
-%                   traceGen_p2.colormapMatrix(200e-9, 20, 100e-9, 10, traceXNew(i,:), traceYNew(i,:),Vx,Vy);
                   
+                  traceGen_p2.colormapMatrix(200e-9, 20, 100e-9, 10, traceXNew(i,:), traceYNew(i,:),Vx,Vy);
                   
-%                   figure(5)
-%                   %current density
-%                   JArray(i)=q*numel(Vx)*sqrt(sum(Vx)^2+sum(Vy)^2);
-%                   plot(timeArray(1:i),JArray(1:i));
-%                   title('net current density')
+                  figure(2);
+                  title(ax1,['The average temperature is ',num2str(tempArray(i)),' K'])
+                  title(ax2,['The Mean Time of collision is ',num2str(mean(NextCollision-LastCollision)),' s'])
+                  figure(5)
+                  
+                  JArray(i)=q*numel(Vx)*sqrt(sum(Vx)^2+sum(Vy)^2);
+                  plot(timeArray(1:i),JArray(1:i));
+                  title('net current density')
                   
               end
           
@@ -300,8 +300,8 @@ classdef traceGen_p2
               xAxis=linspace(xSpace,xLim,xNSpace);
               yAxis=linspace(ySpace,yLim,yNSpace);
               figure(4);
-              surf(xAxis,yAxis,tempMatrix);
-              title('surf map for temperature');
+              pcolor(xAxis,yAxis,tempMatrix);
+              title('color map for temperature');
               shading interp
               
           end
