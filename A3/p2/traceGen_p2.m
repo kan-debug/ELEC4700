@@ -102,7 +102,7 @@ classdef traceGen_p2
                     set(gcf,'renderer','opengl');
                     set(get(gca,'child'),'FaceColor','interp','CDataMode','auto');
                   title(['This is interval',num2str(i),' out of total ',num2str(interval),' intervals']);
-                  
+                  view(20,45)
                   %temperature color map
 %                   traceGen_p2.colormapMatrix(200e-9, 20, 100e-9, 10, traceXNew(i,:), traceYNew(i,:),Vx,Vy);
                   

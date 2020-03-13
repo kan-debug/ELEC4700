@@ -32,7 +32,7 @@ TraceParticlesY = zeros(TStop/dt,nParticles);
 % assigning initial positions
 % PositionParticlesX = Xlim*rand([1,nParticles]);
 % PositionParticlesY = Ylim*rand([1,nParticles]);
-[PositionParticlesX, PositionParticlesY] = traceGen_p2.boxInit([75e-9;125e-9], [0;Ylim-40e-9], 50e-9, 40e-9, Xlim, Ylim,nParticles);
+[PositionParticlesX, PositionParticlesY] = traceGen_p3.boxInit([75e-9;125e-9], [0;Ylim-40e-9], 50e-9, 40e-9, Xlim, Ylim,nParticles);
 %add this to update function later
 TraceParticlesX(1,:) = PositionParticlesX;
 TraceParticlesY(1,:) = PositionParticlesY;
@@ -70,7 +70,7 @@ box_height = size_sweep(counter)*2e-7;
 %acceloration
 [Ax,Ay] = fieldGen(1,1,0.01,int8(box_width/2e-7*51),int8(box_height/1e-7*41));
 
-[size_sweep_current(counter),densityX(counter,:),densityY(counter,:)] = traceGen_p2.iterate(i,TraceParticlesX(:,1:nParticlesPlot),TraceParticlesY(:,1:nParticlesPlot),VelocityParticleX(:,1:nParticlesPlot),VelocityParticleY(:,1:nParticlesPlot),dt, Ax, Ay, box1, box2);
+[size_sweep_current(counter),densityX(counter,:),densityY(counter,:)] = traceGen_p3.iterate(i,TraceParticlesX(:,1:nParticlesPlot),TraceParticlesY(:,1:nParticlesPlot),VelocityParticleX(:,1:nParticlesPlot),VelocityParticleY(:,1:nParticlesPlot),dt, Ax, Ay, box1, box2);
 end 
 
 close all

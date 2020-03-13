@@ -1,4 +1,4 @@
-classdef traceGen_p2
+classdef traceGen_p3
     methods(Static)
           
         %to reduce the horizontal trace, move the previous point towards
