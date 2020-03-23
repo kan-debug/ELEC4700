@@ -19,23 +19,27 @@ C_MATRIX = zeros(5);
 G =     [1/R1 -1/R1-1/R2 0 1 0;
         1 0 0 0 0;
         0 0 -1/R4-1/Ro 0 alpha/R4;
-        0 -1 0 0 R3;
-        0 0 0 -1 -1]
+        0 1 0 0 -R3;
+        0 0 0 -1 -1];
     
 C_MATRIX =  [C -C 0 0 0;
     0 0 0 0 0;
     0 0 0 0 0;
     0 0 0 L 0;
-    0 0 0 0 0]
+    0 0 0 0 0];
     
 F = [0;Vin;0;0;0];
 
 DC_sweep_script
 
-AC_sweep_script
+%AC_sweep_script
 
-Cap_sweep_script
+%Cap_sweep_script
+dt = 1/1000;
+Vin_test = ones(1,1000);
+Npoints = 0.03/dt;
+Vin_test(1:Npoints) = zeros(1,Npoints);
+transient (Vin_test, dt, G, C_MATRIX);
 
-transient
 
 
