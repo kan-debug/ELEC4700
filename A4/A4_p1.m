@@ -35,11 +35,28 @@ DC_sweep_script
 %AC_sweep_script
 
 %Cap_sweep_script
-dt = 1/1000;
-Vin_test = ones(1,1000);
-Npoints = 0.03/dt;
-Vin_test(1:Npoints) = zeros(1,Npoints);
-transient (Vin_test, dt, G, C_MATRIX);
+figureNum = 2;
+[Vin_test,dt] = StepSignal_inputGen;
+transient (Vin_test, dt, G, C_MATRIX, figureNum);
+
+figureNum = 3;
+f = 1/0.03;
+[Vin_test,dt] = SineSignal_inputGen(f);
+[Vo_sine,~]=transient (Vin_test, dt, G, C_MATRIX, figureNum);
+figure(4)
+plot(1:1000,fftshift(fft(Vo_sine)))
+
+figureNum = 5;
+f = 1/0.003;
+[Vin_test,dt] = SineSignal_inputGen(f);
+[Vo_sine,~]=transient (Vin_test, dt, G, C_MATRIX, figureNum);
+figure(6)
+plot(1:1000,fftshift(fft(Vo_sine)))
 
 
+figureNum = 7;
+[Vin_test,dt] = GaussianSignal_inputGen();
+[Vo_sine,~]=transient (Vin_test, dt, G, C_MATRIX, figureNum);
+figure(8)
+plot(1:1000,fftshift(fft(Vo_sine)))
 

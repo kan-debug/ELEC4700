@@ -1,4 +1,4 @@
-function [Vo, gain] = transient (Vin, dt, G, C_MATRIX)
+function [Vo, gain] = transient (Vin, dt, G, C_MATRIX, figureNum)
 
 tStop = 1;
 %unknown V = [N1 N2 N5 IL I3]
@@ -14,8 +14,8 @@ gain = zeros (1, numel(Vin));
 A = C_MATRIX/dt + G;
 counter = 1;
 
-
-for time = 0:dt:tStop
+%total point is one more since including 0
+for time = 0:dt:tStop-dt
     
     % forcing factors
     F = [0;Vin(counter);0;0;0];
@@ -33,14 +33,14 @@ gain(counter) = 10*log(V(3,counter)/Vin(counter));
 
 
 %move this outside later on
-figure(2)
-plot(0:dt:time,real(Vo(1:counter)))
-hold on
-plot(0:dt:time,real(Vin(1:counter)))
-plot(0:dt:time,real(gain(1:counter)))
-hold off
-legend('Vout (V)','Vin (V)', 'gain (log10)')
+
 counter = counter +1;
 end
-
+figure(figureNum)
+plot(0:dt:tStop-dt,real(Vo))
+hold on
+plot(0:dt:tStop-dt,real(Vin))
+plot(0:dt:tStop-dt,real(gain))
+hold off
+legend('Vout (V)','Vin (V)', 'gain (log10)')
 end
