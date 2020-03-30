@@ -6,7 +6,8 @@ C = 0.25;
 R2 = 2;
 L = 0.2;
 %extracted from the slope
-R3 = 1/0.1429;
+% R3 = 1/0.1429;
+ R3 = 3;
 alpha = 100;
 R4 = 0.1;
 Ro = 1000;
@@ -40,10 +41,12 @@ F = [0;In;0;0;Vin;0];
 
 %Cap_sweep_script
 
-In = 0.001*randn(1,1000);
+In = 1*randn(1,1000);
 histogram(In)
-figureNum = 1;
+
+figureNum = 2;
+dt=1/1000;
 [Vin_test] = GaussianSignal_inputGen(dt);
-[Vo_sine,~]=transient (Vin_test, dt, G, C_MATRIX, figureNum);
-figure(8)
+[Vo_sine,~]=transient_p2 (Vin_test, dt, G, C_MATRIX, figureNum, In);
+figure(3)
 plot(1:1000,real(fftshift(fft(Vo_sine))))
