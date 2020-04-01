@@ -26,6 +26,8 @@ G =     [1/R1 -1/R1-1/R2 0 0 1 0;       %KCL node N2
         1 0 0 0 0 0;                    %input
         0 0 1 0 0 -R3];                 %I3
     
+B = [0 0 0 Ro/(R4+Ro) 0 0]=[0 0 0 alpha*I3+beta*I3^2+gamma*I3^3 0 0];
+    
 C_MATRIX =  [C -C 0 0 0 0;
     0 0 -Cp 0 0 0;
     0 0 0 0 0 0;

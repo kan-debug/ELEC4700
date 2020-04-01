@@ -27,19 +27,21 @@ G =     [1/R1 -1/R1-1/R2 0 0 1 0;       %KCL node N2
         0 0 1 0 0 -R3];                 %I3
     
 C_MATRIX =  [C -C 0 0 0 0;
-    0 0 -Cp 0 0 0;
+    0 0 -C 0 0 0;
     0 0 0 0 0 0;
     0 0 0 0 L 0;
     0 0 0 0 0 0;
-    0 0 0 0 0 0]
+    0 0 0 0 0 0];
     
 F = [0;In;0;0;Vin;0];
+
+%With In=0, DC (no Cap effect) simulation proved to be the same
+%DC_sweep_script
 
 
 %Cap_sweep_script
 
-In = 1*randn(1,10000);
-In = .001*rand(1,1000);
+In = 1*randn(1,1000);
 histogram(In)
 
 figureNum = 2;
@@ -47,4 +49,4 @@ dt=1/1000;
 [Vin_test] = GaussianSignal_inputGen(dt);
 [Vo_sine,~]=transient_p2 (Vin_test, dt, G, C_MATRIX, figureNum, In);
 figure(3)
-semilogy(1:1000,abs(fftshift(fft(Vo_sine))))
+plot(1:1000,real(fftshift(fft(Vo_sine))))

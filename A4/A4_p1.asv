@@ -48,10 +48,10 @@ figureNum = 5;
 f = 1/0.03;
 [Vin_test,dt] = SineSignal_inputGen(f);
 [Vo_sine]=transient (Vin_test, dt, G, C_MATRIX, figureNum);
-title('Sine transient')
+title('Sine low frequency transient')
 figure(6)
 semilogy(1:1000,abs(fftshift(fft(Vo_sine))))
-title('Sine frequency spectrum')
+title('Sine low frequency frequency spectrum')
 
 figureNum = 7;
 f = 1/0.003;
@@ -62,30 +62,23 @@ figure(8)
 semilogy(1:1000,abs(fftshift(fft(Vo_sine))))
 title('Sine high frequency frequency spectrum')
 
+
+
+
 figureNum = 9;
-f = 1/0.3;
-[Vin_test,dt] = SineSignal_inputGen(f);
-[Vo_sine]=transient (Vin_test, dt, G, C_MATRIX, figureNum);
-title('Sine low frequency transient')
-figure(10)
-semilogy(1:1000,abs(fftshift(fft(Vo_sine))))
-title('Sine low frequency frequency spectrum')
-
-
-figureNum = 11;
 [Vin_test] = GaussianSignal_inputGen(dt);
 [Vo_sine]=transient (Vin_test, dt, G, C_MATRIX, figureNum);
 title('Gaussian transient')
-figure(12)
+figure(10)
 semilogy(1:1000,abs(fftshift(fft(Vo_sine))))
 title('Gaussian frequency spectrum')
 
 % change step time
-figureNum = 13;
+figureNum = 11;
 dt = 1/10000;
 [Vin_test] = GaussianSignal_inputGen(dt);
 [Vo_sine]=transient (Vin_test, dt, G, C_MATRIX, figureNum);
 title('Gaussian higher step(10 times) transient')
-figure(14)
-semilogy(1:10000,abs(fftshift(fft(Vo_sine))))
+figure(12)
+semilogy(1:2:1000,abs(fftshift(fft(Vo_sine))))
 title('Gaussian higher step(10 times) frequency spectrum')

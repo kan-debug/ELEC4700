@@ -1,2 +1,5 @@
 git.[command]
 clone, add, commit, push
+
+fatal:repository does not found?
+git push <repo_name> master

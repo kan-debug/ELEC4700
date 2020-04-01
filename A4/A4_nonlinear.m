@@ -21,10 +21,11 @@ Cp = 0.00001;
 %now unknown V = [N1 N2 N3 N5 IL I3]
 G =     [1/R1 -1/R1-1/R2 0 0 1 0;       %KCL node N2
         0 0 0 0 -1 -1;                  %KCL node N3
-        0 0 0 -1/R4-1/Ro 0 alpha/R4;    %KCL node N5
+        0 0 0 1 0 0;                    %KCL node N5
         0 1 -1 0 0 0;                   %inductor current
         1 0 0 0 0 0;                    %input
         0 0 1 0 0 -R3];                 %I3
+    
     
 C_MATRIX =  [C -C 0 0 0 0;
     0 0 -Cp 0 0 0;
@@ -45,6 +46,6 @@ histogram(In)
 figureNum = 2;
 dt=1/1000;
 [Vin_test] = GaussianSignal_inputGen(dt);
-[Vo_sine,~]=transient_p2 (Vin_test, dt, G, C_MATRIX, figureNum, In);
+[Vo_sine,~]=transient_nonLinear (Vin_test, dt, G, C_MATRIX, figureNum, In);
 figure(3)
 semilogy(1:1000,abs(fftshift(fft(Vo_sine))))
